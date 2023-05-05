@@ -7,9 +7,13 @@
 
 import SwiftUI
 
+struct SingInAccount {
+    var email: String = ""
+    var password: String = ""
+}
+
 struct SingIn: View {
-    @State private var email: String = ""
-    @State private var password: String = ""
+    @State var singInAccount = SingInAccount()
     
     var body: some View {
         VStack{
@@ -22,7 +26,7 @@ struct SingIn: View {
             HStack{
                 Image(systemName: "envelope.fill")
                     .foregroundColor(.purple)
-                TextField("E-mail", text: $email)
+                TextField("E-mail", text: $singInAccount.email)
                     .fontWeight(.medium)
             }
             .padding()
@@ -36,7 +40,7 @@ struct SingIn: View {
             HStack{
                 Image(systemName: "lock.fill")
                     .foregroundColor(.purple)
-                SecureField("Senha", text: $password)
+                SecureField("Senha", text: $singInAccount.password)
             }
             .padding()
             .overlay {

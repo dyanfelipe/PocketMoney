@@ -7,11 +7,15 @@
 
 import SwiftUI
 
+struct NewChild {
+     var name: String = ""
+     var email: String = ""
+     var password: String = ""
+}
+
 struct RegisteredChildren: View {
     @State private var showSheet = false
-    @State private var name: String = ""
-    @State private var email: String = ""
-    @State private var password: String = ""
+    @State private var newChild = NewChild()
     
     var body: some View {
         VStack{
@@ -42,7 +46,7 @@ struct RegisteredChildren: View {
                                 HStack{
                                     Image(systemName: "person.fill")
                                         .foregroundColor(.purple)
-                                    TextField("Nome do filho", text: $name)
+                                    TextField("Nome do filho", text: $newChild.name)
                                         .fontWeight(.medium)
                                 }
                                 .padding()
@@ -56,7 +60,7 @@ struct RegisteredChildren: View {
                                 HStack{
                                     Image(systemName: "envelope.fill")
                                         .foregroundColor(.purple)
-                                    TextField("Email", text: $email)
+                                    TextField("Email", text: $newChild.email)
                                         .fontWeight(.medium)
                                 }
                                 .padding()
@@ -70,7 +74,7 @@ struct RegisteredChildren: View {
                                 HStack{
                                     Image(systemName: "lock.fill")
                                         .foregroundColor(.purple)
-                                    TextField("Senha", text: $password)
+                                    TextField("Senha", text: $newChild.password)
                                         .fontWeight(.medium)
                                 }
                                 .padding()

@@ -11,19 +11,21 @@ enum Profile: String, CaseIterable, Identifiable {
     case father = "pai", mother = "mãe", son = "Filho"
     var id: Self { self }
 }
+struct CreatedAccount {
+    var email: String = ""
+    var password: String = ""
+    var confirmPassword: String = ""
+}
 
 struct SignUp: View {
-    @State private var email: String = ""
-    @State private var password: String = ""
-    @State private var confirmPassword: String = ""
-    @State private var profile: Profile = .son
+    @State var createdAccount = CreatedAccount()
     
     var body: some View {
         Form {
             HStack{
                 Image(systemName: "envelope.fill")
                     .foregroundColor(.purple)
-                TextField("E-mail", text: $email)
+                TextField("E-mail", text: $createdAccount.email)
                     .fontWeight(.medium)
             }
            
@@ -38,7 +40,7 @@ struct SignUp: View {
             HStack{
                 Image(systemName: "lock.fill")
                     .foregroundColor(.purple)
-                TextField("Senha", text: $password)
+                TextField("Senha", text: $createdAccount.password)
                     .fontWeight(.medium)
             }
             .listRowSeparator(.hidden)
@@ -52,7 +54,7 @@ struct SignUp: View {
             HStack{
                 Image(systemName: "lock.fill")
                     .foregroundColor(.purple)
-                TextField("Confirmar senha", text: $confirmPassword)
+                TextField("Confirmar senha", text: $createdAccount.confirmPassword)
                     .fontWeight(.medium)
             }
             .listRowSeparator(.hidden)
