@@ -59,11 +59,11 @@
 		86A531DF2A030F86003055A1 /* Pocket Money */ = {
 			isa = PBXGroup;
 			children = (
+				86A531E22A030F86003055A1 /* ContentView.swift */,
 				86A531E02A030F86003055A1 /* Pocket_MoneyApp.swift */,
 				861644712A0459190025CC3F /* RegisteredChildren.swift */,
-				8616446F2A0443510025CC3F /* SignUp.swift */,
 				861644732A048F440025CC3F /* Extension.swift */,
-				86A531E22A030F86003055A1 /* ContentView.swift */,
+				8616446F2A0443510025CC3F /* SignUp.swift */,
 				86A0E1082A04240C009A1107 /* SingIn.swift */,
 				86A531E42A030F86003055A1 /* Assets.xcassets */,
 				86A531E62A030F86003055A1 /* Preview Content */,

@@ -7,25 +7,33 @@
 
 import SwiftUI
 
+// MARK: - ??
 enum Profile: String, CaseIterable, Identifiable {
     case father = "pai", mother = "mãe", son = "Filho"
     var id: Self { self }
 }
+
+// MARK: - Model
 struct CreatedAccount {
     var email: String = ""
     var password: String = ""
     var confirmPassword: String = ""
 }
 
+// MARK: - VIEWMODEL
+struct SignUpViewModel {
+    var createdAccount = CreatedAccount()
+}
+
 struct SignUp: View {
-    @State var createdAccount = CreatedAccount()
+    @State var viewModel = SignUpViewModel()
     
     var body: some View {
         Form {
             HStack{
                 Image(systemName: "envelope.fill")
                     .foregroundColor(.purple)
-                TextField("E-mail", text: $createdAccount.email)
+                TextField("E-mail", text: $viewModel.createdAccount.email)
                     .fontWeight(.medium)
             }
            
@@ -40,7 +48,7 @@ struct SignUp: View {
             HStack{
                 Image(systemName: "lock.fill")
                     .foregroundColor(.purple)
-                TextField("Senha", text: $createdAccount.password)
+                TextField("Senha", text: $viewModel.createdAccount.password)
                     .fontWeight(.medium)
             }
             .listRowSeparator(.hidden)
@@ -54,7 +62,7 @@ struct SignUp: View {
             HStack{
                 Image(systemName: "lock.fill")
                     .foregroundColor(.purple)
-                TextField("Confirmar senha", text: $createdAccount.confirmPassword)
+                TextField("Confirmar senha", text: $viewModel.createdAccount.confirmPassword)
                     .fontWeight(.medium)
             }
             .listRowSeparator(.hidden)

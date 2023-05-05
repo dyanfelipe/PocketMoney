@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// MARK: - Model
 struct Carousel: Identifiable {
     let name: String
     let text: String
@@ -14,11 +15,22 @@ struct Carousel: Identifiable {
     var id: String { name }
 }
 
+// MARK: - VIEWMODEL
+struct ContentViewModel {
+    var index = 0
+    var transitionAnimation: CGFloat = 200.0
+    let carousel = [
+        Carousel(name: "money.bag", text: "O conhecimento começa pequeno", styleValue: 0),
+        Carousel(name: "money.safe", text: "Vamos enteder \n  o que é valor", styleValue: 1)
+    ]
+}
+
 struct ContentView: View {
+    @State var viewModel = ContentViewModel()
     var body: some View {
         NavigationStack{
             VStack {
-                CarouselImageText()
+                CarouselImageText(viewModel: $viewModel)
                 Spacer()
                 ButtonsSingInSinUp()
             }
@@ -35,36 +47,30 @@ struct ContentView_Previews: PreviewProvider {
 }
 
 struct CarouselImageText: View {
-    @State private var index = 0
-    @State private var transitionAnimation: CGFloat = 200.0
-    
-    let carousel = [
-        Carousel(name: "money.bag", text: "O conhecimento começa pequeno", styleValue: 0),
-        Carousel(name: "money.safe", text: "Vamos enteder \n  o que é valor", styleValue: 1)
-    ]
+    @Binding var viewModel: ContentViewModel
     
     var body: some View {
         VStack{
-            Image(carousel[index].name)
+            Image(viewModel.carousel[viewModel.index].name)
                 .resizable()
                 .scaledToFit()
                 .frame(maxWidth: 300, maxHeight: 300)
             
             HStack {
-                ForEach(carousel) { carousel in
+                ForEach(viewModel.carousel) { carousel in
                     Capsule()
-                        .frame(width: index == carousel.styleValue ? 48 : 24, height: 8)
+                        .frame(width: viewModel.index == carousel.styleValue ? 48 : 24, height: 8)
                         .foregroundColor(.purple)
-                        .opacity(index == carousel.styleValue ? 1 : 0.5)
+                        .opacity(viewModel.index == carousel.styleValue ? 1 : 0.5)
                 }
             }
-            Text(carousel[index].text)
+            Text(viewModel.carousel[viewModel.index].text)
                 .font(.title)
                 .fontWeight(.medium)
                 .foregroundColor(Color(.darkText))
         }
-        .onTapGesture {  index += index == 1 ? -1 : +1; transitionAnimation -= 100.0}
-        .animation(Animation.easeInOut(duration: 1.0), value: transitionAnimation)
+        .onTapGesture {  viewModel.index += viewModel.index == 1 ? -1 : +1; viewModel.transitionAnimation -= 100.0}
+        .animation(Animation.easeInOut(duration: 1.0), value: viewModel.transitionAnimation)
     }
 }
 

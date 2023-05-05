@@ -7,15 +7,25 @@
 
 import SwiftUI
 
+// MARK: - MODEL
 struct NewChild {
-     var name: String = ""
-     var email: String = ""
-     var password: String = ""
+    var name: String = ""
+    var email: String = ""
+    var password: String = ""
+    var showSheet: Bool = false
+}
+
+// MARK: - VIEWMODEL
+struct RegisteredChildrenViewModel {
+    var child = NewChild()
+    
+    mutating func showSheetToggle() {
+        self.child.showSheet.toggle()
+    }
 }
 
 struct RegisteredChildren: View {
-    @State private var showSheet = false
-    @State private var newChild = NewChild()
+    @State var viewModel = RegisteredChildrenViewModel()
     
     var body: some View {
         VStack{
@@ -38,7 +48,7 @@ struct RegisteredChildren: View {
                         .frame(maxWidth: .infinity, alignment: .trailing)
                 }
             }
-            .sheet(isPresented: $showSheet) {
+            .sheet(isPresented: $viewModel.child.showSheet) {
                 NavigationView {
                     VStack{
                         Form {
@@ -46,7 +56,7 @@ struct RegisteredChildren: View {
                                 HStack{
                                     Image(systemName: "person.fill")
                                         .foregroundColor(.purple)
-                                    TextField("Nome do filho", text: $newChild.name)
+                                    TextField("Nome do filho", text: $viewModel.child.name)
                                         .fontWeight(.medium)
                                 }
                                 .padding()
@@ -60,7 +70,7 @@ struct RegisteredChildren: View {
                                 HStack{
                                     Image(systemName: "envelope.fill")
                                         .foregroundColor(.purple)
-                                    TextField("Email", text: $newChild.email)
+                                    TextField("Email", text: $viewModel.child.email)
                                         .fontWeight(.medium)
                                 }
                                 .padding()
@@ -74,7 +84,7 @@ struct RegisteredChildren: View {
                                 HStack{
                                     Image(systemName: "lock.fill")
                                         .foregroundColor(.purple)
-                                    TextField("Senha", text: $newChild.password)
+                                    TextField("Senha", text: $viewModel.child.password)
                                         .fontWeight(.medium)
                                 }
                                 .padding()
@@ -110,7 +120,7 @@ struct RegisteredChildren: View {
                     .toolbar{
                         ToolbarItem(placement: .navigationBarLeading) {
                             Button {
-                                showSheet.toggle()
+                                viewModel.showSheetToggle()
                             } label: {
                                 Image(systemName: "chevron.backward")
                                     .fontWeight(.bold)
@@ -125,7 +135,7 @@ struct RegisteredChildren: View {
         .toolbar{
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
-                    showSheet.toggle()
+                    viewModel.showSheetToggle()
                 } label: {
                     Image(systemName: "plus")
                         .fontWeight(.bold)
