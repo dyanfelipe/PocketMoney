@@ -26,12 +26,14 @@ struct SignUp: View {
                 TextField("E-mail", text: $email)
                     .fontWeight(.medium)
             }
+           
             .listRowSeparator(.hidden)
             .padding()
             .overlay {
                 RoundedRectangle(cornerRadius: 8, style: .continuous)
                     .stroke(Color(UIColor.systemGray4), lineWidth: 2)
             }
+            .padding(.top)
             
             HStack{
                 Image(systemName: "lock.fill")
@@ -60,33 +62,18 @@ struct SignUp: View {
                     .stroke(Color(UIColor.systemGray4), lineWidth: 2)
             }
           
-            
-            HStack{
-                Picker("Eu sou", selection: $profile) {
-                    ForEach(Profile.allCases){ profile in
-                        Text(profile.rawValue.capitalized)
-                            
-                    }
-                }
-            }
-            .listRowSeparator(.hidden)
-            .padding()
-                .overlay {
-                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .stroke(Color(UIColor.systemGray4), lineWidth: 2)
-                }
             Button {
                 // MARK: Actions
             } label: {
                 Text("Cadastrar")
                     .fontWeight(.semibold)
                     .foregroundColor(.white)
-                    .frame(maxWidth: .maximum(300, 300))
+                    .frame(maxWidth: .infinity, alignment: .center)
                     .padding(4)
             }
             .buttonStyle(.borderedProminent)
             .tint(.purple)
-            .padding(.bottom)
+            .padding(.vertical)
         }
         .navigationTitle("Criar conta")
         .navigationBarTitleDisplayMode(.inline)
