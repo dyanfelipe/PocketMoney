@@ -41,15 +41,38 @@ struct Auth: Decodable {
 }
 
 // MARK: - VIEWMODEL
-struct SingInViewModel {
+class SingInViewModel: ObservableObject {
     var singInAccount = SingInAccount()
+    var confirmationMessage: String = "Tente novamente mais tarde"
+    @Published var showingConfirmation: Bool = false
+    @AppStorage("token") var token = ""
+    
+    func authenticateUser(user: Auth) {
+        token = user.accessToken
+    }
+    
+    func placeOrder() async {
+        guard let encoded = try? JSONEncoder().encode(singInAccount) else {
+            print("Failed to encode order")
+            return
+        }
+        guard let url = URL(string: "http://localhost:3000/login") else {return}
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "POST"
+        
+        do {
+            let (data, _) = try await URLSession.shared.upload(for: request, from: encoded)
+            let authenticatedUser = try JSONDecoder().decode(Auth.self, from: data)
+            authenticateUser(user: authenticatedUser)
+        } catch  {
+            self.showingConfirmation = true
+        }
+    }
 }
 
 struct SingIn: View {
-    @State var viewModel = SingInViewModel()
-    
-    @State private var confirmationMessage: String = "Deseja tentar novamente"
-    @State private var showingConfirmation: Bool = false
+    @StateObject var viewModel = SingInViewModel()
     
     var body: some View {
         VStack{
@@ -85,9 +108,9 @@ struct SingIn: View {
             }
             .padding()
             
-            Button{
+            Button {
                 Task {
-                    await placeOrder()
+                    await viewModel.placeOrder()
                 }
             } label: {
                 Text("Entrar")
@@ -104,34 +127,13 @@ struct SingIn: View {
         }
         .navigationTitle("Login")
         .navigationBarTitleDisplayMode(.inline)
-        .alert("Email ou senha incorreto", isPresented: $showingConfirmation){
+        .alert("Email ou senha incorreto", isPresented: $viewModel.showingConfirmation){
             Button("OK"){}
         } message: {
-            Text(confirmationMessage)
-        }
-    }
-    
-    func placeOrder() async {
-        guard let encoded = try? JSONEncoder().encode(viewModel.singInAccount) else {
-            print("Failed to encode order")
-            return
-        }
-        guard let url = URL(string: "http://localhost:3000/login") else {return}
-        var request = URLRequest(url: url)
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpMethod = "POST"
-        
-        do {
-            let (data, _) = try await URLSession.shared.upload(for: request, from: encoded)
-            let decodedSingIN = try JSONDecoder().decode(Auth.self, from: data)
-            print("code \(decodedSingIN)")
-        } catch {
-            print(error.localizedDescription)
+            Text(viewModel.confirmationMessage)
         }
     }
 }
-
-
 
 struct SingIn_Previews: PreviewProvider {
     static var previews: some View {
