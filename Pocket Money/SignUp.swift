@@ -71,71 +71,79 @@ struct SignUp: View {
     @StateObject var viewModel = SignUpViewModel()
     
     var body: some View {
-        Form {
-            HStack{
-                Image(systemName: "envelope.fill")
-                    .foregroundColor(.purple)
-                TextField("E-mail", text: $viewModel.createdAccount.email)
-                    .fontWeight(.medium)
-            }
-           
-            .listRowSeparator(.hidden)
-            .padding()
-            .overlay {
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .stroke(Color(UIColor.systemGray4), lineWidth: 2)
-            }
-            .padding(.top)
-            
-            HStack{
-                Image(systemName: "lock.fill")
-                    .foregroundColor(.purple)
-                SecureField("Senha", text: $viewModel.createdAccount.password)
-                    .fontWeight(.medium)
-            }
-            .listRowSeparator(.hidden)
-            .padding()
-            .overlay {
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .stroke(Color(UIColor.systemGray4), lineWidth: 2)
-            }
-        
-            
-            HStack{
-                Image(systemName: "lock.fill")
-                    .foregroundColor(.purple)
-                SecureField("Confirmar senha", text: $viewModel.createdAccount.confirmPassword)
-                    .fontWeight(.medium)
-            }
-            .listRowSeparator(.hidden)
-            .padding()
-            .overlay {
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .stroke(Color(UIColor.systemGray4), lineWidth: 2)
-            }
-          
-            Button {
-                Task {
-                    await viewModel.createUser()
+        GeometryReader { geometry in
+            ScrollView(.vertical) {
+                VStack{
+                    HStack{
+                        Image(systemName: "envelope.fill")
+                            .foregroundColor(.purple)
+                        TextField("E-mail", text: $viewModel.createdAccount.email)
+                            .fontWeight(.medium)
+                    }
+                   
+                    .listRowSeparator(.hidden)
+                    .padding()
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .stroke(Color(UIColor.systemGray4), lineWidth: 2)
+                    }
+                    .padding(.top)
+                    
+                    HStack{
+                        Image(systemName: "lock.fill")
+                            .foregroundColor(.purple)
+                        SecureField("Senha", text: $viewModel.createdAccount.password)
+                            .fontWeight(.medium)
+                    }
+                    .listRowSeparator(.hidden)
+                    .padding()
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .stroke(Color(UIColor.systemGray4), lineWidth: 2)
+                    }
+                
+                    
+                    HStack{
+                        Image(systemName: "lock.fill")
+                            .foregroundColor(.purple)
+                        SecureField("Confirmar senha", text: $viewModel.createdAccount.confirmPassword)
+                            .fontWeight(.medium)
+                    }
+                    .listRowSeparator(.hidden)
+                    .padding()
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .stroke(Color(UIColor.systemGray4), lineWidth: 2)
+                    }
+                  
+                    Button {
+                        Task {
+                            await viewModel.createUser()
+                        }
+                    } label: {
+                        Text("Cadastrar")
+                            .fontWeight(.semibold)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(4)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.purple)
+                    .padding(.vertical)
                 }
-            } label: {
-                Text("Cadastrar")
-                    .fontWeight(.semibold)
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(4)
+                .padding()
+                .frame(width: geometry.size.width)
+                .frame(minHeight: geometry.size.height)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(.purple)
-            .padding(.vertical)
+            .navigationTitle("Criar conta")
+            .navigationBarTitleDisplayMode(.inline)
+            .alert("Error ao realizar o cadastro", isPresented: $viewModel.showingConfirmation){
+                Button("OK"){}
+            } message: {
+                Text(viewModel.confirmationMessage)
+            }
         }
-        .navigationTitle("Criar conta")
-        .navigationBarTitleDisplayMode(.inline)
-        .alert("Error ao realizar o cadastro", isPresented: $viewModel.showingConfirmation){
-            Button("OK"){}
-        } message: {
-            Text(viewModel.confirmationMessage)
-        }
+
     }
 }
 
