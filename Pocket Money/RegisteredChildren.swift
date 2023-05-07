@@ -102,30 +102,46 @@ struct RegisteredChildren: View {
     @StateObject var viewModel = RegisteredChildrenViewModel()
     
     var body: some View {
-        VStack{
-            Form{
+        VStack {
+            Form {
                 ForEach(viewModel.childs, id: \.id ) { child in
                     let newValueFormatted = viewModel.convetRealToCentsDecimal(savedValueD: child.savedValue, amountToSpendD: child.amountToSpend)
                     let amountToSpend = viewModel.convetRealToCentsDecimal(value: child.amountToSpend)
                     let savedValue = viewModel.convetRealToCentsDecimal(value: child.savedValue)
-                    
-                    Section(child.name) {
-                        Text("Valor para gastar: R$ \(amountToSpend)")
-                            .font(.subheadline)
+                    Section {
+                        GroupBox {
+                            Text("Valor para gastar: R$ \(amountToSpend)")
+                                .padding([.bottom], 2)
+                                .font(.subheadline)
+                                .foregroundColor(.gray7)
+                                .fontWeight(.medium)
+                                .listRowSeparator(.hidden)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            Text("Valor Guardado: R$ \(savedValue)")
+                                .padding([.bottom], 4)
+                                .foregroundColor(.gray7)
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            Text("Total: R$ \(newValueFormatted)")
+                                .foregroundColor(.gray7)
+                                .font(.title2)
+                                .fontWeight(.medium)
+                                .frame(maxWidth: .infinity, alignment: .trailing)
+                        }
+                        .backgroundStyle(Color(.white))
+                        .listRowInsets(EdgeInsets())
+                       
+                    } header: {
+                        Text(child.name)
                             .foregroundColor(.gray7)
-                            .fontWeight(.medium)
-                            .listRowSeparator(.hidden)
-                        Text("Valor Guardado: R$ \(savedValue)")
-                            .foregroundColor(.gray7)
-                            .font(.subheadline)
-                            .fontWeight(.medium)
-                        
-                        Text("Total: R$ \(newValueFormatted)")
-                            .foregroundColor(.gray7)
-                            .font(.title2)
-                            .fontWeight(.medium)
-                            .frame(maxWidth: .infinity, alignment: .trailing)
                     }
+                    
+                }
+                .onDelete { offsets in
+                    let reversed = Array(viewModel.childs.reversed()) //get the reversed array -- use Array() so we don't get a ReversedCollection
+                    let items = Set(offsets.map { reversed[$0].id }) //get the IDs to delete
+                    viewModel.childs.removeAll { items.contains($0.id) } //remove the items with IDs that match the Set
                 }
 
             }
