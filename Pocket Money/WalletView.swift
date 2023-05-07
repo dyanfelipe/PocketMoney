@@ -8,45 +8,41 @@
 import SwiftUI
 
 //MARK - MODEL
-struct WalletModal {
+struct WalletModel {
+    let name: String
     let amountToSpend: String
     let savedValue: String
-    let history: [HistoryItem]
-}
-
-struct HistoryItem: Identifiable {
-    let amount: String
-    let description: String
-    let date: String
-    let tag: String
-    var id: String { amount + description + date + tag }
+    let history: [HistoryItemModel]
 }
 
 
 //MARK - VIEW MODEL
-struct WalletViewModal {
-    let walletData = WalletModal(
+struct WalletViewModel {
+    let walletData = WalletModel(
+        name: "Maria Silva Santos",
         amountToSpend: "250,00",
         savedValue: "510,00",
         history: [
-            HistoryItem(amount: "-35,00", description: "Lanche", date: "05/05/2023", tag: "Gasto"),
-            HistoryItem(amount: "-12,00", description: "Sorvete", date: "01/05/2023", tag: "Gasto"),
-            HistoryItem(amount: "80,00", description: "", date: "20/04/2023", tag: "Guardado"),
-            HistoryItem(amount: "150,00", description: "Mesada", date: "20/04/2023", tag: "Depósito"),
-            HistoryItem(amount: "-18,00", description: "Uber", date: "13/04/2023", tag: "Gasto"),
+            HistoryItemModel(amount: "-35,00", description: "Lanche", date: "05/05/2023", tag: "Gasto"),
+            HistoryItemModel(amount: "-12,00", description: "Sorvete", date: "01/05/2023", tag: "Gasto"),
+            HistoryItemModel(amount: "80,00", description: "", date: "20/04/2023", tag: "Guardado"),
+            HistoryItemModel(amount: "150,00", description: "Mesada", date: "20/04/2023", tag: "Depósito"),
+            HistoryItemModel(amount: "-18,00", description: "Uber", date: "13/04/2023", tag: "Gasto"),
         ]
     )
 }
 
 
 //MARK - VIEW
-struct ChildWalletView: View {
+struct WalletView: View {
+    
+    let parent: Bool = false
     
     var body: some View {
         NavigationStack {
             VStack{
-                WalletData()
-                ActionsButtons()
+                WalletData(parent: parent)
+                ActionsButtons(parent: parent)
                 WalletHistory()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -57,27 +53,37 @@ struct ChildWalletView: View {
     
 }
 
-struct ChildWallet_Previews: PreviewProvider {
+struct Wallet_Previews: PreviewProvider {
     static var previews: some View {
-        ChildWalletView()
+        WalletView()
     }
 }
 
 
 struct WalletData: View {
+    
+    let parent: Bool
+    
     var body: some View {
         VStack {
             Text("Carteira")
                 .font(Font.system(Font.TextStyle.largeTitle, weight: Font.Weight.bold))
                 .frame(maxWidth: .infinity, alignment: .center)
                 .foregroundColor(.black)
-                .padding(.bottom, 20)
+                .padding(.bottom, parent ? 0 : 20)
+            
+            if(parent){
+                Text(WalletViewModel().walletData.name)
+                    .font(.system(.body, weight: .semibold))
+                    .shadow(color: .white, radius: 10)
+                    .padding(.bottom, parent ? 10 : 0)
+            }
             
             Text("Valor para gastar")
                 .font(Font.system(Font.TextStyle.callout))
                 .foregroundColor(.white)
             
-            Text("R$ \(WalletViewModal().walletData.amountToSpend)")
+            Text("R$ \(WalletViewModel().walletData.amountToSpend)")
                 .font(Font.system(Font.TextStyle.largeTitle, weight: Font.Weight.bold))
                 .foregroundColor(Color.white)
                 .shadow(color: Color.black, radius: 5)
@@ -87,30 +93,35 @@ struct WalletData: View {
                 .font(Font.system(Font.TextStyle.callout))
                 .foregroundColor(.white)
             
-            Text("R$ \(WalletViewModal().walletData.savedValue)")
+            Text("R$ \(WalletViewModel().walletData.savedValue)")
                 .font(Font.system(Font.TextStyle.title, weight: Font.Weight.semibold))
                 .foregroundColor(Color.white)
                 .shadow(color: Color.black, radius: 5)
         }
-        .background(BgDataWallet())
-    }
-}
-
-struct BgDataWallet: View {
-    var body: some View {
-        Circle()
-            .fill(.purple.gradient)
-            .frame(width: 500, height: 500)
-            .shadow(radius: 10)
-            .padding(.top, -100)
+        .background(
+            Circle()
+                .fill(.purple.gradient)
+                .frame(width: 500, height: 500)
+                .shadow(radius: 10)
+                .padding(.top, -130)
+        )
     }
 }
 
 struct ActionsButtons: View {
+    
+    let parent: Bool
+    
     var body: some View {
         HStack {
-            ActionButton(emoji: "💸", sfSimbolName: nil, text: "REGISTRAR GASTO")
-                .padding(.top, -40)
+            
+            if(parent){
+                ActionButton(emoji: "💵", sfSimbolName: nil, text: "DEPOSITAR")
+                    .padding(.top, -50)
+            } else {
+                ActionButton(emoji: "💸", sfSimbolName: nil, text: "REGISTRAR GASTO")
+                    .padding(.top, -50)
+            }
             
             Spacer()
             
@@ -118,15 +129,20 @@ struct ActionsButtons: View {
                 HistoryView()
             } label: {
                 ActionButton(emoji: nil, sfSimbolName: "list.bullet", text: "HISTÓRICO")
-                    .padding(.top, 40)
+                    .padding(.top, 30)
             }
 
             Spacer()
             
-            ActionButton(emoji: "💰", sfSimbolName: nil, text: "GUARDAR DINHEIRO")
-                .padding(.top, -40)
+            if(parent){
+                ActionButton(emoji: "💸", sfSimbolName: nil, text: "SACAR")
+                    .padding(.top, -50)
+            } else {
+                ActionButton(emoji: "💰", sfSimbolName: nil, text: "GUARDAR DINHEIRO")
+                    .padding(.top, -50)
+            }
         }
-        .frame(maxWidth: .infinity, minHeight: 150, alignment: .top)
+        .frame(maxWidth: .infinity, minHeight: 130, alignment: .top)
     }
 }
 
@@ -174,7 +190,7 @@ struct WalletHistory: View {
                 .padding(.bottom, 5)
             
             ScrollView {
-                ForEach(WalletViewModal().walletData.history) { historyItem in
+                ForEach(WalletViewModel().walletData.history) { historyItem in
                     WalletHistoryItem(amount: historyItem.amount, description: historyItem.description, date: historyItem.date, tag: historyItem.tag)
                 }
             }
