@@ -15,40 +15,11 @@ struct ChildWalletView: View {
         VStack{
             WalletDataView()
             ActionsButtonsView()
-            
-            VStack {
-                Text("Extrato")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .font(Font.system(Font.TextStyle.title, weight: Font.Weight.bold))
-                
-                Text("5 últimas movimentações")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .font(Font.system(Font.TextStyle.caption))
-                    .foregroundColor(.gray7)
-                    .padding(.bottom, 5)
-                
-                ScrollView {
-                    ExtractItem(amount: "- R$ 35,00", description: "Lanche", tag: "Gasto")
-                    ExtractItem(amount: "- R$ 12,00", description: "Sorvete", tag: "Gasto")
-                    ExtractItem(amount: "+ R$ 80,00", description: "", tag: "Guardado")
-                    ExtractItem(amount: "+ R$ 150,00", description: "Mesada", tag: "Depósito")
-                    ExtractItem(amount: "- R$ 18,00", description: "Uber", tag: "Gasto")
-                }
-                .scrollIndicators(.hidden)
-
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .multilineTextAlignment(.leading)
-            .padding(.top, 10)
-            
-            //.background(.blue)
-            
+            WalletStatementView()
         }
-        
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .padding(20)
         .ignoresSafeArea(edges: .bottom)
-        //.background(.red)
         
     }
     
@@ -70,18 +41,15 @@ struct WalletDataView: View {
                 .foregroundColor(.black)
                 .padding(.bottom, 20)
             
-            
             Text("Valor para gastar")
                 .font(Font.system(Font.TextStyle.callout))
                 .foregroundColor(.white)
-            
             
             Text("R$ 250,00")
                 .font(Font.system(Font.TextStyle.largeTitle, weight: Font.Weight.bold))
                 .foregroundColor(Color.white)
                 .shadow(color: Color.black, radius: 5)
                 .padding(.bottom, 5)
-            
             
             Text("Valor guardado")
                 .font(Font.system(Font.TextStyle.callout))
@@ -100,9 +68,9 @@ struct BgDataWallet: View {
     var body: some View {
         Circle()
             .fill(.purple.gradient)
-            .frame(width: 450, height: 450)
+            .frame(width: 500, height: 500)
             .shadow(radius: 10)
-            .padding(.top, -200)
+            .padding(.top, -100)
     }
 }
 
@@ -145,18 +113,18 @@ struct ActionButton: View {
             }
             
             Text(text)
-                .font(Font.system(Font.TextStyle.caption2, weight: .heavy))
+                .font(Font.system(Font.TextStyle.caption2, weight: .bold))
                 .multilineTextAlignment(.center)
         }
-        .frame(maxWidth: 80, maxHeight:100, alignment: .center)
+        .frame(maxWidth: 90, maxHeight:90, alignment: .center)
         .foregroundColor(Color.white)
         .background(Color.darkPurple)
         .cornerRadius(100)
-        .shadow(radius: 5)
+        .shadow(color:.black, radius: 10)
     }
 }
 
-struct ExtractItem: View {
+struct WalletStatementItem: View {
     let amount: String
     let description: String
     let tag: String
@@ -189,5 +157,32 @@ struct ExtractItem: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(.gray.opacity(0.1))
         .cornerRadius(5)
+    }
+}
+
+struct WalletStatementView: View {
+    var body: some View {
+        VStack {
+            Text("Extrato")
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .font(Font.system(Font.TextStyle.title, weight: Font.Weight.bold))
+            
+            Text("5 últimas movimentações")
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .font(Font.system(Font.TextStyle.caption))
+                .foregroundColor(.gray7)
+                .padding(.bottom, 5)
+            
+            ScrollView {
+                WalletStatementItem(amount: "- R$ 35,00", description: "Lanche", tag: "Gasto")
+                WalletStatementItem(amount: "- R$ 12,00", description: "Sorvete", tag: "Gasto")
+                WalletStatementItem(amount: "+ R$ 80,00", description: "", tag: "Guardado")
+                WalletStatementItem(amount: "+ R$ 150,00", description: "Mesada", tag: "Depósito")
+                WalletStatementItem(amount: "- R$ 18,00", description: "Uber", tag: "Gasto")
+            }
+            .scrollIndicators(.hidden)
+
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
