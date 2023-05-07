@@ -13,14 +13,14 @@ struct HistoryItemModel: Identifiable {
     let description: String
     let date: String
     let tag: String
-    var id: String {amount + description + date + tag}
+    var id: String { amount + description + date + tag }
 }
 
 
 //MARK - VIEW MODEL
 struct HistoryViewModel {
     let history = [
-        HistoryItemModel(amount: "- R$ 35,00", description: "Lanche", date: "05/05/2023", tag: "💸 Gasto"),
+        HistoryItemModel(amount: "- R$ 35,00", description: "Lanche", date: "05/05/2023", tag: "Gasto"),
         HistoryItemModel(amount: "- R$ 12,00", description: "Sorvete", date: "01/05/2023", tag: "Gasto"),
         HistoryItemModel(amount: "+ R$ 80,00", description: "", date: "20/04/2023", tag: "Guardado"),
         HistoryItemModel(amount: "+ R$ 150,00", description: "Mesada", date: "20/04/2023", tag: "Depósito"),
@@ -38,55 +38,64 @@ struct HistoryViewModel {
 //MARK - VIEW
 struct HistoryView: View {
     var body: some View {
+        
         VStack{
-            
-            
-            VStack {
-                Text("Histórico")
-                    .font(Font.system(Font.TextStyle.largeTitle, weight: Font.Weight.bold))
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .foregroundColor(.black)
-                    .padding(.bottom, 3)
-                
-                
-                Text("Aqui você pode acompanhar o histórico \n de movimentações da sua carteira.")
-                    .font(.system(.footnote))
-                    .foregroundColor(.white)
-                    .multilineTextAlignment(.center)
-                
-            }
-            .frame(maxWidth: .infinity)
-            .background(
-                Circle()
-                    .fill(.purple.gradient)
-                    .frame(width: 600, height: 600)
-                    .shadow(radius: 10)
-                    .padding(.top, -450)
-            )
-            .zIndex(1)
-            
-            
-            
-            ScrollView {
-                Rectangle()
-                    .fill(.clear)
-                    .frame(width: .infinity, height: 70)
-                ForEach(HistoryViewModel().history) { historyItem in
-                    WalletHistoryItem(amount: historyItem.amount, description: historyItem.description, date: historyItem.date, tag: historyItem.tag)
-                }
-            }
-            .padding(EdgeInsets(top: -40, leading: 20, bottom: 0, trailing: 20))
-            .scrollIndicators(.hidden)
-            
-            
+            Title()
+            History()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .ignoresSafeArea(edges: .bottom)
+        .toolbarBackground(Color.purple, for: .navigationBar)
     }
 }
 
 struct History_Preview: PreviewProvider {
     static var previews: some View {
-        HistoryView()
+        NavigationStack{
+            HistoryView()
+        }
+    }
+}
+
+struct Title: View {
+    var body: some View {
+        VStack {
+            Text("Histórico")
+                .font(Font.system(Font.TextStyle.largeTitle, weight: Font.Weight.bold))
+                .frame(maxWidth: .infinity, alignment: .center)
+                .foregroundColor(.black)
+                .padding(.bottom, 3)
+            
+            
+            Text("Aqui você pode acompanhar o histórico \n de movimentações da sua carteira.")
+                .font(.system(.footnote))
+                .foregroundColor(.white)
+                .multilineTextAlignment(.center)
+            
+        }
+        .frame(maxWidth: .infinity)
+        .background(
+            Circle()
+                .fill(.purple.gradient)
+                .frame(width: 600, height: 600)
+                .shadow(radius: 10)
+                .padding(.top, -450)
+        )
+        .zIndex(1)
+    }
+}
+
+struct History: View {
+    var body: some View {
+        ScrollView {
+            Rectangle()
+                .fill(.clear)
+                .frame(width: .infinity, height: 70)
+            ForEach(HistoryViewModel().history) { historyItem in
+                WalletHistoryItem(amount: historyItem.amount, description: historyItem.description, date: historyItem.date, tag: historyItem.tag)
+            }
+        }
+        .padding(EdgeInsets(top: -40, leading: 20, bottom: 0, trailing: 20))
+        .scrollIndicators(.hidden)
     }
 }

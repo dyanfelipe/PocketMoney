@@ -7,20 +7,52 @@
 
 import SwiftUI
 
+//MARK - MODEL
+struct WalletModal {
+    let amountToSpend: String
+    let savedValue: String
+    let history: [HistoryItem]
+}
+
+struct HistoryItem: Identifiable {
+    let amount: String
+    let description: String
+    let date: String
+    let tag: String
+    var id: String { amount + description + date + tag }
+}
+
+
+//MARK - VIEW MODEL
+struct WalletViewModal {
+    let walletData = WalletModal(
+        amountToSpend: "250,00",
+        savedValue: "510,00",
+        history: [
+            HistoryItem(amount: "-35,00", description: "Lanche", date: "05/05/2023", tag: "Gasto"),
+            HistoryItem(amount: "-12,00", description: "Sorvete", date: "01/05/2023", tag: "Gasto"),
+            HistoryItem(amount: "80,00", description: "", date: "20/04/2023", tag: "Guardado"),
+            HistoryItem(amount: "150,00", description: "Mesada", date: "20/04/2023", tag: "Depósito"),
+            HistoryItem(amount: "-18,00", description: "Uber", date: "13/04/2023", tag: "Gasto"),
+        ]
+    )
+}
+
 
 //MARK - VIEW
 struct ChildWalletView: View {
     
     var body: some View {
-        VStack{
-            WalletData()
-            ActionsButtons()
-            WalletHistory()
+        NavigationStack {
+            VStack{
+                WalletData()
+                ActionsButtons()
+                WalletHistory()
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
+            .ignoresSafeArea(edges: .bottom)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
-        .ignoresSafeArea(edges: .bottom)
-        
     }
     
 }
@@ -45,7 +77,7 @@ struct WalletData: View {
                 .font(Font.system(Font.TextStyle.callout))
                 .foregroundColor(.white)
             
-            Text("R$ 250,00")
+            Text("R$ \(WalletViewModal().walletData.amountToSpend)")
                 .font(Font.system(Font.TextStyle.largeTitle, weight: Font.Weight.bold))
                 .foregroundColor(Color.white)
                 .shadow(color: Color.black, radius: 5)
@@ -55,7 +87,7 @@ struct WalletData: View {
                 .font(Font.system(Font.TextStyle.callout))
                 .foregroundColor(.white)
             
-            Text("R$ 510,00")
+            Text("R$ \(WalletViewModal().walletData.savedValue)")
                 .font(Font.system(Font.TextStyle.title, weight: Font.Weight.semibold))
                 .foregroundColor(Color.white)
                 .shadow(color: Color.black, radius: 5)
@@ -82,8 +114,12 @@ struct ActionsButtons: View {
             
             Spacer()
             
-            ActionButton(emoji: nil, sfSimbolName: "list.bullet", text: "HISTÓRICO")
-                .padding(.top, 40)
+            NavigationLink {
+                HistoryView()
+            } label: {
+                ActionButton(emoji: nil, sfSimbolName: "list.bullet", text: "HISTÓRICO")
+                    .padding(.top, 40)
+            }
 
             Spacer()
             
@@ -138,14 +174,11 @@ struct WalletHistory: View {
                 .padding(.bottom, 5)
             
             ScrollView {
-                WalletHistoryItem(amount: "- R$ 35,00", description: "Lanche", date: "05/05/2023", tag: "Gasto")
-                WalletHistoryItem(amount: "- R$ 12,00", description: "Sorvete", date: "01/05/2023", tag: "Gasto")
-                WalletHistoryItem(amount: "+ R$ 80,00", description: "", date: "20/04/2023", tag: "Guardado")
-                WalletHistoryItem(amount: "+ R$ 150,00", description: "Mesada", date: "20/04/2023", tag: "Depósito")
-                WalletHistoryItem(amount: "- R$ 18,00", description: "Uber", date: "13/04/2023", tag: "Gasto")
+                ForEach(WalletViewModal().walletData.history) { historyItem in
+                    WalletHistoryItem(amount: historyItem.amount, description: historyItem.description, date: historyItem.date, tag: historyItem.tag)
+                }
             }
             .scrollIndicators(.hidden)
-
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -160,10 +193,11 @@ struct WalletHistoryItem: View {
     var body: some View {
         HStack {
             VStack {
-                Text(amount)
+                Text((amount.contains("-") ? "-" : "+") + " R$ \(amount.replacing("-", with: ""))")
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .font(.system(.headline))
                     .foregroundColor(amount.contains("-") ? .red : .green)
+                
                 if(description != ""){
                     Text(description)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -177,6 +211,10 @@ struct WalletHistoryItem: View {
                     .font(Font.system(Font.TextStyle.caption))
                     .foregroundColor(.gray)
                     .padding(.leading, amount.contains("-") ? 12 : 15)
+                
+                if(description == ""){
+                    Text("")
+                }
             }
             .padding()
             
