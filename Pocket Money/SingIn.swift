@@ -45,10 +45,18 @@ class SingInViewModel: ObservableObject {
     var singInAccount = SingInAccount()
     var confirmationMessage: String = "Tente novamente mais tarde"
     @Published var showingConfirmation: Bool = false
+    @Published var userIsAuthenticated: Bool = false
     @AppStorage("token") var token = ""
     
-    func authenticateUser(user: Auth) {
-        token = user.accessToken
+    func authenticateUser(accessToken: String) {
+        token = accessToken
+        userIsAuthenticated = true
+    }
+    
+    init() {
+        if (token.count > 0){
+            userIsAuthenticated = true
+        }
     }
     
     func placeOrder() async {
@@ -64,7 +72,7 @@ class SingInViewModel: ObservableObject {
         do {
             let (data, _) = try await URLSession.shared.upload(for: request, from: encoded)
             let authenticatedUser = try JSONDecoder().decode(Auth.self, from: data)
-            authenticateUser(user: authenticatedUser)
+            authenticateUser(accessToken: authenticatedUser.accessToken)
         } catch  {
             self.showingConfirmation = true
         }

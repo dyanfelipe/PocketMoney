@@ -27,14 +27,22 @@ struct ContentViewModel {
 
 struct ContentView: View {
     @State var viewModel = ContentViewModel()
+    @EnvironmentObject var singInViewModel: SingInViewModel
+    
+    @ViewBuilder
     var body: some View {
         NavigationStack{
-            VStack {
-                CarouselImageText(viewModel: $viewModel)
-                Spacer()
-                ButtonsSingInSinUp()
+            if singInViewModel.userIsAuthenticated {
+                RegisteredChildren()
+            }else {
+                VStack {
+                    CarouselImageText(viewModel: $viewModel)
+                    Spacer()
+                    ButtonsSingInSinUp()
+                }
+                .padding()
             }
-            .padding()
+       
         }
        
     }

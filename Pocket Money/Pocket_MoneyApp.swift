@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct Pocket_MoneyApp: App {
+    @StateObject var viewModel = SingInViewModel()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(viewModel)
         }
     }
 }
