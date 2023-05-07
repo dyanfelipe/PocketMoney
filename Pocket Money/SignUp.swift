@@ -14,19 +14,61 @@ enum Profile: String, CaseIterable, Identifiable {
 }
 
 // MARK: - Model
-struct CreatedAccount {
-    var email: String = ""
-    var password: String = ""
-    var confirmPassword: String = ""
+struct CreatedAccount: Codable {
+    var email: String = "olivier@mail.com"
+    var password: String = "bestPassw0rd"
+    var confirmPassword: String = "bestPassw0rd"
+}
+
+struct CreateAccountAuthUser: Decodable {
+    let email: String
+    let confirmPassword: String
+    let id: Int
+}
+
+
+struct CreateAccountAuth: Decodable {
+    let accessToken: String
+    let user: CreateAccountAuthUser
+    
+    
+     enum CodingKeys: String, CodingKey {
+        case accessToken
+        case user
+    }
 }
 
 // MARK: - VIEWMODEL
-struct SignUpViewModel {
+class SignUpViewModel: ObservableObject {
     var createdAccount = CreatedAccount()
+    var confirmationMessage = "Tente novamente mais tarde"
+    @Published var showingConfirmation: Bool = false
+    @State var viewModel = SingInViewModel()
+    
+    func createUser() async {
+        guard let encoded = try? JSONEncoder().encode(createdAccount) else {
+            print("Failed to encode order")
+            return
+        }
+        guard let url = URL(string: "http://localhost:3000/register") else {return}
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "POST"
+        
+        do {
+            let (data, _) = try await URLSession.shared.upload(for: request, from: encoded)
+            let authenticatedUser = try JSONDecoder().decode(CreateAccountAuth.self, from: data)
+            print(data)
+            viewModel.authenticateUser(accessToken: authenticatedUser.accessToken)
+        } catch  {
+            print(error.localizedDescription)
+            self.showingConfirmation = true
+        }
+    }
 }
 
 struct SignUp: View {
-    @State var viewModel = SignUpViewModel()
+    @StateObject var viewModel = SignUpViewModel()
     
     var body: some View {
         Form {
@@ -48,7 +90,7 @@ struct SignUp: View {
             HStack{
                 Image(systemName: "lock.fill")
                     .foregroundColor(.purple)
-                TextField("Senha", text: $viewModel.createdAccount.password)
+                SecureField("Senha", text: $viewModel.createdAccount.password)
                     .fontWeight(.medium)
             }
             .listRowSeparator(.hidden)
@@ -62,7 +104,7 @@ struct SignUp: View {
             HStack{
                 Image(systemName: "lock.fill")
                     .foregroundColor(.purple)
-                TextField("Confirmar senha", text: $viewModel.createdAccount.confirmPassword)
+                SecureField("Confirmar senha", text: $viewModel.createdAccount.confirmPassword)
                     .fontWeight(.medium)
             }
             .listRowSeparator(.hidden)
@@ -73,7 +115,9 @@ struct SignUp: View {
             }
           
             Button {
-                // MARK: Actions
+                Task {
+                    await viewModel.createUser()
+                }
             } label: {
                 Text("Cadastrar")
                     .fontWeight(.semibold)
@@ -87,7 +131,11 @@ struct SignUp: View {
         }
         .navigationTitle("Criar conta")
         .navigationBarTitleDisplayMode(.inline)
-        
+        .alert("Error ao realizar o cadastro", isPresented: $viewModel.showingConfirmation){
+            Button("OK"){}
+        } message: {
+            Text(viewModel.confirmationMessage)
+        }
     }
 }
 
