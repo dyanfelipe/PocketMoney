@@ -71,7 +71,6 @@ class RegisteredChildrenViewModel: ObservableObject {
             print(userCreated)
         } catch  {
             print(error.localizedDescription)
-//            self.showingConfirmation = true
         }
     }
     
@@ -79,16 +78,24 @@ class RegisteredChildrenViewModel: ObservableObject {
         let savedValueD = Double(savedValueD) ?? 0.0
         let amountToSpendD = Double(amountToSpendD) ?? 0.0
         let sumDouble = ((savedValueD + amountToSpendD) / 100) * 100
-        
+        let newValue = formatNumberToReal(value: sumDouble)
+        return newValue
+    }
+    
+    func convetRealToCentsDecimal(value: String) -> String {
+        let value = Double(value) ?? 0.0
+        let valueNewFormatted = (value / 100) * 100
+        let newValue = formatNumberToReal(value: valueNewFormatted)
+        return newValue
+    }
+    
+    func formatNumberToReal(value: Double) -> String {
         let numberFormatter = NumberFormatter()
         numberFormatter.locale = Locale(identifier: "pt_BR")
         numberFormatter.minimumFractionDigits = 2
         numberFormatter.numberStyle = .decimal
-        return numberFormatter.string(from: NSNumber(value: sumDouble)) ?? "0.0"
-        
+        return numberFormatter.string(from: NSNumber(value: value)) ?? "0.0"
     }
-    
-    
 }
 
 struct RegisteredChildren: View {
@@ -99,13 +106,16 @@ struct RegisteredChildren: View {
             Form{
                 ForEach(viewModel.childs, id: \.id ) { child in
                     let newValueFormatted = viewModel.convetRealToCentsDecimal(savedValueD: child.savedValue, amountToSpendD: child.amountToSpend)
+                    let amountToSpend = viewModel.convetRealToCentsDecimal(value: child.amountToSpend)
+                    let savedValue = viewModel.convetRealToCentsDecimal(value: child.savedValue)
+                    
                     Section(child.name) {
-                        Text("Valor para gastar: R$ \(child.amountToSpend)")
+                        Text("Valor para gastar: R$ \(amountToSpend)")
                             .font(.subheadline)
                             .foregroundColor(.gray7)
                             .fontWeight(.medium)
                             .listRowSeparator(.hidden)
-                        Text("Valor Guardado: R$ \(child.savedValue)")
+                        Text("Valor Guardado: R$ \(savedValue)")
                             .foregroundColor(.gray7)
                             .font(.subheadline)
                             .fontWeight(.medium)
