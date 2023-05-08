@@ -31,12 +31,10 @@ struct User: Decodable {
 
 struct Auth: Decodable {
     let accessToken: String
-    let user: User
     
     
      enum CodingKeys: String, CodingKey {
         case accessToken
-        case user
     }
 }
 
@@ -80,7 +78,7 @@ class SingInViewModel: ObservableObject {
 }
 
 struct SingIn: View {
-    @StateObject var viewModel = SingInViewModel()
+    @EnvironmentObject var viewModel: SingInViewModel
     
     var body: some View {
         VStack{
@@ -131,7 +129,12 @@ struct SingIn: View {
             .tint(.purple)
             .padding(.bottom)
             
-            
+//            NavigationLink(value: navi) {
+//                if let hasValue = navi {
+//                    RegisteredChildren()
+//                }
+//
+//            }
         }
         .navigationTitle("Login")
         .navigationBarTitleDisplayMode(.inline)
@@ -144,9 +147,15 @@ struct SingIn: View {
 }
 
 struct SingIn_Previews: PreviewProvider {
+    static let transactionListVM: SingInViewModel = {
+        let transactionListVM = SingInViewModel()
+        return transactionListVM
+    }()
+    
     static var previews: some View {
         NavigationStack{
             SingIn()
+                .environmentObject(transactionListVM)
         }
     }
 }

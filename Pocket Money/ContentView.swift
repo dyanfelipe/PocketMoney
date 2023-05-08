@@ -49,8 +49,13 @@ struct ContentView: View {
 }
 
 struct ContentView_Previews: PreviewProvider {
+    static let transactionListVM: SingInViewModel = {
+        let transactionListVM = SingInViewModel()
+        return transactionListVM
+    }()
     static var previews: some View {
         ContentView()
+            .environmentObject(transactionListVM)
     }
 }
 
