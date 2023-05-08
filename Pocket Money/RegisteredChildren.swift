@@ -99,7 +99,8 @@ class RegisteredChildrenViewModel: ObservableObject {
 }
 
 struct RegisteredChildren: View {
-    @StateObject var viewModel = RegisteredChildrenViewModel()
+    @EnvironmentObject var viewModel: RegisteredChildrenViewModel
+    @EnvironmentObject var singInViewModel: SingInViewModel
     
     var body: some View {
         VStack {
@@ -144,6 +145,9 @@ struct RegisteredChildren: View {
                     viewModel.childs.removeAll { items.contains($0.id) } //remove the items with IDs that match the Set
                 }
 
+            }
+            .refreshable {
+                await viewModel.getChilds()
             }
             .task {
                 await viewModel.getChilds()
@@ -240,7 +244,19 @@ struct RegisteredChildren: View {
                     viewModel.showSheetToggle()
                 } label: {
                     Image(systemName: "plus")
+                        .foregroundColor(.gray7)
                         .fontWeight(.bold)
+                }
+            }
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    singInViewModel.signOut()
+                } label: {
+                    Image(systemName: "chevron.backward")
+                        .foregroundColor(.gray7)
+                        .fontWeight(.bold)
+                    Text("Sair")
+                        .foregroundColor(.gray7)
                 }
             }
         }
@@ -249,9 +265,15 @@ struct RegisteredChildren: View {
 }
 
 struct RegisteredChildren_Previews: PreviewProvider {
+    static let transactionListVM: RegisteredChildrenViewModel = {
+        let transactionListVM = RegisteredChildrenViewModel()
+        transactionListVM.childs = transactionListPreviewData
+        return transactionListVM
+    }()
     static var previews: some View {
         NavigationStack{
             RegisteredChildren()
+                .environmentObject(transactionListVM)
         }
     }
 }

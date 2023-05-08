@@ -7,6 +7,26 @@
 
 import SwiftUI
 
+// MARK: - UTILS.
+
+struct TextFieldBorderIcon: ViewModifier { // .modifier(TextFieldBorderIcon())
+    func body(content: Content) -> some View {
+        content
+        .padding()
+        .overlay {
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .stroke(Color(UIColor.systemGray4), lineWidth: 2)
+        }
+        .padding([.horizontal])
+    }
+}
+
+extension View {
+    func textFieldBorderIcon() -> some View {
+        modifier(TextFieldBorderIcon())
+    }
+}
+
 // MARK: - Model
 struct SingInAccount: Codable {
     var email: String = "olivier@mail.com"
@@ -57,6 +77,11 @@ class SingInViewModel: ObservableObject {
         }
     }
     
+    func signOut()  {
+        userIsAuthenticated = false
+        token = ""
+    }
+    
     func placeOrder() async {
         guard let encoded = try? JSONEncoder().encode(singInAccount) else {
             print("Failed to encode order")
@@ -79,11 +104,13 @@ class SingInViewModel: ObservableObject {
 
 struct SingIn: View {
     @EnvironmentObject var viewModel: SingInViewModel
+    @EnvironmentObject var registeredChildren: RegisteredChildrenViewModel
     
     var body: some View {
         VStack{
             if  viewModel.userIsAuthenticated {
                 RegisteredChildren()
+                    .environmentObject(registeredChildren)
             } else {
                 Image("happy.family")
                     .resizable()
@@ -97,12 +124,7 @@ struct SingIn: View {
                     TextField("E-mail", text: $viewModel.singInAccount.email)
                         .fontWeight(.medium)
                 }
-                .padding()
-                .overlay {
-                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .stroke(Color(UIColor.systemGray4), lineWidth: 2)
-                }
-                .padding([.horizontal])
+                .textFieldBorderIcon()
                 
                 
                 HStack{
@@ -110,12 +132,7 @@ struct SingIn: View {
                         .foregroundColor(.purple)
                     SecureField("Senha", text: $viewModel.singInAccount.password)
                 }
-                .padding()
-                .overlay {
-                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .stroke(Color(UIColor.systemGray4), lineWidth: 2)
-                }
-                .padding()
+                .textFieldBorderIcon()
                 
                 Button {
                     Task {
@@ -145,15 +162,20 @@ struct SingIn: View {
 }
 
 struct SingIn_Previews: PreviewProvider {
-    static let transactionListVM: SingInViewModel = {
+    static let viewModel: SingInViewModel = {
         let transactionListVM = SingInViewModel()
         return transactionListVM
     }()
-    
+    static let registeredChildrenViewModel: RegisteredChildrenViewModel = {
+        let transactionListVM = RegisteredChildrenViewModel()
+        transactionListVM.childs = transactionListPreviewData
+        return transactionListVM
+    }()
     static var previews: some View {
         NavigationStack{
             SingIn()
-                .environmentObject(transactionListVM)
+                .environmentObject(viewModel)
+                .environmentObject(registeredChildrenViewModel)
         }
     }
 }
