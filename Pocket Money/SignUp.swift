@@ -80,14 +80,7 @@ struct SignUp: View {
                         TextField("E-mail", text: $viewModel.createdAccount.email)
                             .fontWeight(.medium)
                     }
-                   
-                    .listRowSeparator(.hidden)
-                    .padding()
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .stroke(Color(UIColor.systemGray4), lineWidth: 2)
-                    }
-                    .padding(.top)
+                    .textFieldBorderIcon()
                     
                     HStack{
                         Image(systemName: "lock.fill")
@@ -95,12 +88,7 @@ struct SignUp: View {
                         SecureField("Senha", text: $viewModel.createdAccount.password)
                             .fontWeight(.medium)
                     }
-                    .listRowSeparator(.hidden)
-                    .padding()
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .stroke(Color(UIColor.systemGray4), lineWidth: 2)
-                    }
+                    .textFieldBorderIcon()
                 
                     
                     HStack{
@@ -109,12 +97,7 @@ struct SignUp: View {
                         SecureField("Confirmar senha", text: $viewModel.createdAccount.confirmPassword)
                             .fontWeight(.medium)
                     }
-                    .listRowSeparator(.hidden)
-                    .padding()
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .stroke(Color(UIColor.systemGray4), lineWidth: 2)
-                    }
+                    .textFieldBorderIcon()
                   
                     Button {
                         Task {
@@ -129,9 +112,8 @@ struct SignUp: View {
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(.purple)
-                    .padding(.vertical)
+                    .padding()
                 }
-                .padding()
                 .frame(width: geometry.size.width)
                 .frame(minHeight: geometry.size.height)
             }

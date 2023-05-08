@@ -145,9 +145,10 @@ struct SingIn: View {
                         .frame(maxWidth: .maximum(300, 300))
                         .padding(4)
                 }
+                
                 .buttonStyle(.borderedProminent)
                 .tint(.purple)
-                .padding(.bottom)
+                .padding(.vertical)
             }
             
         }

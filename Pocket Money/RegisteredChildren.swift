@@ -101,7 +101,6 @@ class RegisteredChildrenViewModel: ObservableObject {
 struct RegisteredChildren: View {
     @EnvironmentObject var viewModel: RegisteredChildrenViewModel
     @EnvironmentObject var singInViewModel: SingInViewModel
-    
     var body: some View {
         VStack {
             Form {
@@ -154,22 +153,16 @@ struct RegisteredChildren: View {
             }
             .sheet(isPresented: $viewModel.showSheet) {
                 NavigationView {
-                    VStack{
-                        Form {
-                            Section("Novo filho") {
+                    GeometryReader { geometry in
+                        ScrollView(.vertical) {
+                            VStack{
                                 HStack{
                                     Image(systemName: "person.fill")
                                         .foregroundColor(.purple)
                                     TextField("Nome do filho", text: $viewModel.child.name)
                                         .fontWeight(.medium)
                                 }
-                                .padding()
-                                .overlay {
-                                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                        .stroke(Color(UIColor.systemGray4), lineWidth: 2)
-                                }
-                                .listRowSeparator(.hidden)
-                                .padding([.horizontal, .top])
+                                .textFieldBorderIcon()
                                 
                                 HStack{
                                     Image(systemName: "envelope.fill")
@@ -177,13 +170,8 @@ struct RegisteredChildren: View {
                                     TextField("Email", text: $viewModel.child.email)
                                         .fontWeight(.medium)
                                 }
-                                .padding()
-                                .overlay {
-                                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                        .stroke(Color(UIColor.systemGray4), lineWidth: 2)
-                                }
-                                .listRowSeparator(.hidden)
-                                .padding([.horizontal])
+                                .textFieldBorderIcon()
+                            
                                 
                                 HStack{
                                     Image(systemName: "lock.fill")
@@ -191,15 +179,8 @@ struct RegisteredChildren: View {
                                     SecureField("Senha", text: $viewModel.child.password)
                                         .fontWeight(.medium)
                                 }
-                                .padding()
-                                .overlay {
-                                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                        .stroke(Color(UIColor.systemGray4), lineWidth: 2)
-                                }
-                                .listRowSeparator(.hidden)
-                                .padding([.horizontal])
-                                
-                                
+                                .textFieldBorderIcon()
+                              
                                 Button {
                                     Task{
                                         await viewModel.createChild()
@@ -216,20 +197,19 @@ struct RegisteredChildren: View {
                                 .tint(.purple)
                                 .padding(.vertical)
                             }
-                            
-                            
+                            .frame(width: geometry.size.width)
+                            .frame(minHeight: geometry.size.height)
                         }
-                        
-                    }
-                    .navigationTitle("Criar acesso")
-                    .navigationBarTitleDisplayMode(.inline)
-                    .toolbar{
-                        ToolbarItem(placement: .navigationBarLeading) {
-                            Button {
-                                viewModel.showSheetToggle()
-                            } label: {
-                                Image(systemName: "chevron.backward")
-                                    .fontWeight(.bold)
+                        .navigationTitle("Criar acesso")
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar{
+                            ToolbarItem(placement: .navigationBarLeading) {
+                                Button {
+                                    viewModel.showSheetToggle()
+                                } label: {
+                                    Image(systemName: "chevron.backward")
+                                        .fontWeight(.bold)
+                                }
                             }
                         }
                     }
@@ -260,7 +240,7 @@ struct RegisteredChildren: View {
                 }
             }
         }
-        
+
     }
 }
 
