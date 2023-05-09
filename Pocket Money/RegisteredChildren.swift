@@ -13,22 +13,14 @@ struct NewChild: Codable {
     var name: String = "Breno Gabriel Ferreira"
     var email: String = "breno_ferreira@grupoannaprado.com.br"
     var password: String = "senhanoSpace"
+    var passwordConfirmation: String = "senhanoSpace"
 }
 
 struct Childs: Codable {
-    let id: Int
-    let email: String
+    let id: String
     let name: String
-    let savedValue: String
-    let amountToSpend: String
-    
-    enum CodingKeys: String, CodingKey {
-        case id
-        case name
-        case email
-        case savedValue = "saved_value"
-        case amountToSpend = "amount_to_spend"
-    }
+    let savedValue: Int
+    let amountToSpend: Int
 }
 
 // MARK: - VIEWMODEL
@@ -36,21 +28,28 @@ class RegisteredChildrenViewModel: ObservableObject {
     var child = NewChild()
     @Published var showSheet: Bool = false
     @Published var childs: [Childs] = []
+    @StateObject var singInViewModel = SingInViewModel()
     
      func showSheetToggle() {
         self.showSheet.toggle()
     }
     
-
-    
     func getChilds() async {
-        guard let url = URL(string: "http://localhost:3000/childs") else {return}
-        
+        let fullUrl = "https://jab-api-xh0g.onrender.com/api/v1/parents/children"
+        guard let url = URL(string: fullUrl) else {return}
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        request.addValue("Bearer \(singInViewModel.token)", forHTTPHeaderField: "Authorization")
+
         do {
-            let (data, _) = try await URLSession.shared.data(from: url)
+            let (data, _) = try await URLSession.shared.data(for: request)
             let decodedResponse = try JSONDecoder().decode([Childs].self, from: data)
+            print(decodedResponse)
             childs = decodedResponse
         }catch {
+            print(String(describing: error))
             print(error.localizedDescription)
         }
     }
@@ -60,16 +59,20 @@ class RegisteredChildrenViewModel: ObservableObject {
             print("Failed to encode order")
             return
         }
-        guard let url = URL(string: "http://localhost:3000/childs") else {return}
+        guard let url = URL(string: "https://jab-api-xh0g.onrender.com/api/v1/parents") else {return}
         var request = URLRequest(url: url)
+        let authorizationKey = "Basic ".appending(singInViewModel.token)
+        request.setValue(authorizationKey, forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
         
         do {
+            print(singInViewModel.token)
             let (data, _) = try await URLSession.shared.upload(for: request, from: encoded)
             let userCreated = try JSONDecoder().decode(NewChild.self, from: data)
             print(userCreated)
         } catch  {
+            print(singInViewModel.token)
             print(error.localizedDescription)
         }
     }
@@ -101,13 +104,14 @@ class RegisteredChildrenViewModel: ObservableObject {
 struct RegisteredChildren: View {
     @EnvironmentObject var viewModel: RegisteredChildrenViewModel
     @EnvironmentObject var singInViewModel: SingInViewModel
+    
     var body: some View {
         VStack {
             Form {
                 ForEach(viewModel.childs, id: \.id ) { child in
-                    let newValueFormatted = viewModel.convetRealToCentsDecimal(savedValueD: child.savedValue, amountToSpendD: child.amountToSpend)
-                    let amountToSpend = viewModel.convetRealToCentsDecimal(value: child.amountToSpend)
-                    let savedValue = viewModel.convetRealToCentsDecimal(value: child.savedValue)
+                    let newValueFormatted = viewModel.convetRealToCentsDecimal(savedValueD: String(child.savedValue), amountToSpendD: String(child.amountToSpend))
+                    let amountToSpend = viewModel.convetRealToCentsDecimal(value: String(child.amountToSpend))
+                    let savedValue = viewModel.convetRealToCentsDecimal(value: String(child.savedValue))
                     Section {
                         GroupBox {
                             Text("Valor para gastar: R$ \(amountToSpend)")
@@ -177,6 +181,14 @@ struct RegisteredChildren: View {
                                     Image(systemName: "lock.fill")
                                         .foregroundColor(.purple)
                                     SecureField("Senha", text: $viewModel.child.password)
+                                        .fontWeight(.medium)
+                                }
+                                .textFieldBorderIcon()
+                                
+                                HStack{
+                                    Image(systemName: "lock.fill")
+                                        .foregroundColor(.purple)
+                                    SecureField("Confirmar senha", text: $viewModel.child.passwordConfirmation)
                                         .fontWeight(.medium)
                                 }
                                 .textFieldBorderIcon()

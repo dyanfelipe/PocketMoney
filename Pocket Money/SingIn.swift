@@ -51,10 +51,11 @@ struct User: Decodable {
 
 struct Auth: Decodable {
     let accessToken: String
+    let parent: Bool
     
-    
-     enum CodingKeys: String, CodingKey {
-        case accessToken
+    enum CodingKeys: String, CodingKey{
+        case accessToken = "token"
+        case parent
     }
 }
 
@@ -87,7 +88,7 @@ class SingInViewModel: ObservableObject {
             print("Failed to encode order")
             return
         }
-        guard let url = URL(string: "http://localhost:3000/login") else {return}
+        guard let url = URL(string: "https://jab-api-xh0g.onrender.com/api/v1/auth/login") else {return}
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"

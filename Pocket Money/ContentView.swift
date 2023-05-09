@@ -28,8 +28,8 @@ struct ContentViewModel {
 struct ContentView: View {
     @State var viewModel = ContentViewModel()
     @EnvironmentObject var singInViewModel: SingInViewModel
+
     
-    @ViewBuilder
     var body: some View {
         NavigationStack{
             if singInViewModel.userIsAuthenticated {
@@ -53,9 +53,14 @@ struct ContentView_Previews: PreviewProvider {
         let transactionListVM = SingInViewModel()
         return transactionListVM
     }()
+    static let registeredChildrenViewModel: RegisteredChildrenViewModel = {
+        let transactionListVM = RegisteredChildrenViewModel()
+        return transactionListVM
+    }()
     static var previews: some View {
         ContentView()
             .environmentObject(transactionListVM)
+            .environmentObject(registeredChildrenViewModel)
     }
 }
 

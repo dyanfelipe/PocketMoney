@@ -15,9 +15,22 @@ enum Profile: String, CaseIterable, Identifiable {
 
 // MARK: - Model
 struct CreatedAccount: Codable {
+    var name:String = "olivier"
     var email: String = "olivier@mail.com"
     var password: String = "bestPassw0rd"
     var confirmPassword: String = "bestPassw0rd"
+}
+
+struct APIError: Error {
+    var statusCode: Int
+    var message: String
+    var description: String
+    var timestamp: String
+}
+
+struct AlertSingUp: Codable {
+    var message: String
+    var description: String
 }
 
 struct CreateAccountAuthUser: Decodable {
@@ -28,20 +41,22 @@ struct CreateAccountAuthUser: Decodable {
 
 
 struct CreateAccountAuth: Decodable {
-    let accessToken: String
-    let user: CreateAccountAuthUser
+    var id: String
+    var name: String
+    var email: String
     
     
      enum CodingKeys: String, CodingKey {
-        case accessToken
-        case user
+         case id
+         case name
+         case email
     }
 }
 
 // MARK: - VIEWMODEL
 class SignUpViewModel: ObservableObject {
     var createdAccount = CreatedAccount()
-    var confirmationMessage = "Tente novamente mais tarde"
+    @Published var confirmationMessage = AlertSingUp(message: "", description: "")
     @Published var showingConfirmation: Bool = false
     @State var viewModel = SingInViewModel()
     
@@ -50,7 +65,7 @@ class SignUpViewModel: ObservableObject {
             print("Failed to encode order")
             return
         }
-        guard let url = URL(string: "http://localhost:3000/register") else {return}
+        guard let url = URL(string: "https://jab-api-xh0g.onrender.com/api/v1/parents") else {return}
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
@@ -58,10 +73,9 @@ class SignUpViewModel: ObservableObject {
         do {
             let (data, _) = try await URLSession.shared.upload(for: request, from: encoded)
             let authenticatedUser = try JSONDecoder().decode(CreateAccountAuth.self, from: data)
-            print(data)
-            viewModel.authenticateUser(accessToken: authenticatedUser.accessToken)
-        } catch  {
-            print(error.localizedDescription)
+            confirmationMessage = AlertSingUp(message: "Usuário criado com sucesso", description: "Você já pode entrar com o novo usuário!")
+        } catch {
+            confirmationMessage = AlertSingUp(message: "Recurso existente", description: "Já existe um usuário cadastrado com esse e-mail")
             self.showingConfirmation = true
         }
     }
@@ -74,6 +88,14 @@ struct SignUp: View {
         GeometryReader { geometry in
             ScrollView(.vertical) {
                 VStack{
+                    HStack{
+                        Image(systemName: "person.fill")
+                            .foregroundColor(.purple)
+                        TextField("Nome", text: $viewModel.createdAccount.name)
+                            .fontWeight(.medium)
+                    }
+                    .textFieldBorderIcon()
+                    
                     HStack{
                         Image(systemName: "envelope.fill")
                             .foregroundColor(.purple)
@@ -119,10 +141,12 @@ struct SignUp: View {
             }
             .navigationTitle("Criar conta")
             .navigationBarTitleDisplayMode(.inline)
-            .alert("Error ao realizar o cadastro", isPresented: $viewModel.showingConfirmation){
-                Button("OK"){}
+            .alert(viewModel.confirmationMessage.message, isPresented: $viewModel.showingConfirmation){
+                NavigationLink("Ok", destination: {
+                    SingIn()
+                })
             } message: {
-                Text(viewModel.confirmationMessage)
+                Text(viewModel.confirmationMessage.description)
             }
         }
 
