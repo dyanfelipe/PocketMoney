@@ -243,17 +243,6 @@ struct RegisteredChildren: View {
                         .fontWeight(.bold)
                 }
             }
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    singInViewModel.signOut()
-                } label: {
-                    Image(systemName: "chevron.backward")
-                        .foregroundColor(.gray7)
-                        .fontWeight(.bold)
-                    Text("Sair")
-                        .foregroundColor(.gray7)
-                }
-            }
         }
 
     }
