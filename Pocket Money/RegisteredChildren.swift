@@ -9,11 +9,16 @@ import SwiftUI
 
 // MARK: - MODEL
 struct NewChild: Codable {
-    var id: Int = 0
-    var name: String = "Breno Gabriel Ferreira"
-    var email: String = "breno_ferreira@grupoannaprado.com.br"
+    var name: String = "Breno Gabriel Ferreira2"
+    var email: String = "breno_ferreira2@grupoannaprado.com.br"
     var password: String = "senhanoSpace"
     var passwordConfirmation: String = "senhanoSpace"
+}
+
+struct RaisedChild: Codable {
+    var id: String
+    var name: String
+    var email: String
 }
 
 struct Childs: Codable {
@@ -46,11 +51,9 @@ class RegisteredChildrenViewModel: ObservableObject {
         do {
             let (data, _) = try await URLSession.shared.data(for: request)
             let decodedResponse = try JSONDecoder().decode([Childs].self, from: data)
-            print(decodedResponse)
             childs = decodedResponse
         }catch {
-            print(String(describing: error))
-            print(error.localizedDescription)
+            error.localizedDescription
         }
     }
     
@@ -59,20 +62,20 @@ class RegisteredChildrenViewModel: ObservableObject {
             print("Failed to encode order")
             return
         }
-        guard let url = URL(string: "https://jab-api-xh0g.onrender.com/api/v1/parents") else {return}
+        guard let url = URL(string: "https://jab-api-xh0g.onrender.com/api/v1/kids") else {return}
         var request = URLRequest(url: url)
-        let authorizationKey = "Basic ".appending(singInViewModel.token)
+        let authorizationKey = "Bearer ".appending(singInViewModel.token)
         request.setValue(authorizationKey, forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
         
         do {
-            print(singInViewModel.token)
             let (data, _) = try await URLSession.shared.upload(for: request, from: encoded)
-            let userCreated = try JSONDecoder().decode(NewChild.self, from: data)
-            print(userCreated)
+            let userCreated = try JSONDecoder().decode(RaisedChild.self, from: data)
+            await getChilds()
+            showSheetToggle()
         } catch  {
-            print(singInViewModel.token)
+            print(String(describing: error))
             print(error.localizedDescription)
         }
     }
