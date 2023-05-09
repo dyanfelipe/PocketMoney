@@ -106,54 +106,53 @@ class SingInViewModel: ObservableObject {
 struct SingIn: View {
     @EnvironmentObject var viewModel: SingInViewModel
     @EnvironmentObject var registeredChildren: RegisteredChildrenViewModel
-    
+    @State private var selection: String? = nil
     var body: some View {
         VStack{
-            if  viewModel.userIsAuthenticated {
-                RegisteredChildren()
-                    .environmentObject(registeredChildren)
-            } else {
-                Image("happy.family")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(maxWidth: 300, maxHeight: 300)
-                    .padding([.bottom])
-                
-                HStack{
-                    Image(systemName: "envelope.fill")
-                        .foregroundColor(.purple)
-                    TextField("E-mail", text: $viewModel.singInAccount.email)
-                        .fontWeight(.medium)
-                }
-                .textFieldBorderIcon()
-                
-                
-                HStack{
-                    Image(systemName: "lock.fill")
-                        .foregroundColor(.purple)
-                    SecureField("Senha", text: $viewModel.singInAccount.password)
-                }
-                .textFieldBorderIcon()
-                
-                Button {
-                    Task {
-                        await viewModel.placeOrder()
-                    }
-                } label: {
-                    Text("Entrar")
-                        .fontWeight(.semibold)
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .maximum(300, 300))
-                        .padding(4)
-                }
-                
-                .buttonStyle(.borderedProminent)
-                .tint(.purple)
-                .padding(.vertical)
+            Image("happy.family")
+                .resizable()
+                .scaledToFit()
+                .frame(maxWidth: 300, maxHeight: 300)
+                .padding([.bottom])
+            
+            HStack{
+                Image(systemName: "envelope.fill")
+                    .foregroundColor(.purple)
+                TextField("E-mail", text: $viewModel.singInAccount.email)
+                    .fontWeight(.medium)
             }
+            .textFieldBorderIcon()
+            
+            NavigationLink(destination: RegisteredChildren(), tag: "RegisteredChildren", selection: $selection) { EmptyView() }.buttonStyle(PlainButtonStyle())
+            
+            HStack{
+                Image(systemName: "lock.fill")
+                    .foregroundColor(.purple)
+                SecureField("Senha", text: $viewModel.singInAccount.password)
+            }
+            .textFieldBorderIcon()
+            
+            Button {
+                Task {
+                    await viewModel.placeOrder()
+                    selection = "RegisteredChildren"
+                }
+            } label: {
+                Text("Entrar")
+                    .fontWeight(.semibold)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .maximum(300, 300))
+                    .padding(4)
+            }
+            
+            .buttonStyle(.borderedProminent)
+            .tint(.purple)
+            .padding(.vertical)
             
         }
         .navigationTitle("Login")
+        .navigationViewStyle(.stack)
+        .accentColor(.gray7)
         .navigationBarTitleDisplayMode(.inline)
         .alert("Email ou senha incorreto", isPresented: $viewModel.showingConfirmation){
             Button("OK"){}
