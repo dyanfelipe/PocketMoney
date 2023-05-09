@@ -21,7 +21,7 @@ struct RaisedChild: Codable {
     var email: String
 }
 
-struct Childs: Codable {
+struct Childs: Codable, Hashable {
     let id: String
     let name: String
     let savedValue: Int
@@ -107,41 +107,59 @@ class RegisteredChildrenViewModel: ObservableObject {
 struct RegisteredChildren: View {
     @EnvironmentObject var viewModel: RegisteredChildrenViewModel
     @EnvironmentObject var singInViewModel: SingInViewModel
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
+    var backButton : some View { Button(action: {
+        if self.presentationMode.wrappedValue.isPresented{
+            self.presentationMode.wrappedValue.dismiss()
+        } else {
+            singInViewModel.signOut()
+        }
+        }) {
+            HStack {
+            Image(systemName: "chevron.backward") // BackButton Image
+                    .fontWeight(.bold)
+                Text("Sair") //translated Back button title
+            }
+            .foregroundColor(.gray7)
+        }
+    }
     var body: some View {
         VStack {
-            Form {
-                ForEach(viewModel.childs, id: \.id ) { child in
+            List {
+                ForEach(viewModel.childs, id: \.id) { child in
                     let newValueFormatted = viewModel.convetRealToCentsDecimal(savedValueD: String(child.savedValue), amountToSpendD: String(child.amountToSpend))
                     let amountToSpend = viewModel.convetRealToCentsDecimal(value: String(child.amountToSpend))
                     let savedValue = viewModel.convetRealToCentsDecimal(value: String(child.savedValue))
-                    Section {
-                        GroupBox {
-                            Text("Valor para gastar: R$ \(amountToSpend)")
-                                .padding([.bottom], 2)
-                                .font(.subheadline)
-                                .foregroundColor(.gray7)
-                                .fontWeight(.medium)
-                                .listRowSeparator(.hidden)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            Text("Valor Guardado: R$ \(savedValue)")
-                                .padding([.bottom], 4)
-                                .foregroundColor(.gray7)
-                                .font(.subheadline)
-                                .fontWeight(.medium)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            Text("Total: R$ \(newValueFormatted)")
-                                .foregroundColor(.gray7)
-                                .font(.title2)
-                                .fontWeight(.medium)
-                                .frame(maxWidth: .infinity, alignment: .trailing)
+                    Section(child.name) {
+                        NavigationLink{
+                            WalletView()
+                        } label:{
+                            GroupBox() {
+                                Text("Valor para gastar: R$ \(amountToSpend)")
+                                    .padding([.bottom], 2)
+                                    .font(.subheadline)
+                                    .foregroundColor(.gray7)
+                                    .fontWeight(.medium)
+                                    .listRowSeparator(.hidden)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                Text("Valor Guardado: R$ \(savedValue)")
+                                    .padding([.bottom], 4)
+                                    .foregroundColor(.gray7)
+                                    .font(.subheadline)
+                                    .fontWeight(.medium)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                Text("Total: R$ \(newValueFormatted)")
+                                    .foregroundColor(.gray7)
+                                    .font(.title2)
+                                    .fontWeight(.medium)
+                                    .frame(maxWidth: .infinity, alignment: .trailing)
+                                
+                            }
+                            .backgroundStyle(Color(.white))
+                            .listRowInsets(EdgeInsets())
                         }
-                        .backgroundStyle(Color(.white))
-                        .listRowInsets(EdgeInsets())
-                       
-                    } header: {
-                        Text(child.name)
-                            .foregroundColor(.gray7)
+                   
                     }
                     
                 }
@@ -150,8 +168,11 @@ struct RegisteredChildren: View {
                     let items = Set(offsets.map { reversed[$0].id }) //get the IDs to delete
                     viewModel.childs.removeAll { items.contains($0.id) } //remove the items with IDs that match the Set
                 }
-
             }
+            // MARK: - Por que usando essa props ela da erro tendo que remover o navigation da outra tela.
+//            .navigationDestination(for: Childs.self){ item in
+//                WalletView()
+//            }
             .refreshable {
                 await viewModel.getChilds()
             }
@@ -231,6 +252,8 @@ struct RegisteredChildren: View {
                 }
             }
         }
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: backButton)
         .navigationTitle("Filhos")
         .navigationBarTitleDisplayMode(.automatic)
         .toolbar{
@@ -244,8 +267,8 @@ struct RegisteredChildren: View {
                 }
             }
         }
-
     }
+        
 }
 
 struct RegisteredChildren_Previews: PreviewProvider {
