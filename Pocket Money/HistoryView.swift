@@ -23,15 +23,6 @@ struct HistoryItemModel: Codable, Hashable {
         case id
     }
     
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.amount = try container.decode(Double.self, forKey: .amount)
-        self.description = try container.decodeIfPresent(String.self, forKey: .description) ?? "XXXXX"
-        self.date = try container.decode(String.self, forKey: .date)
-        self.tag = try container.decode(String.self, forKey: .tag)
-        self.id = try container.decode(String.self, forKey: .id)
-    }
-    
     init(amount: Double, description: String, date: String, tag: String){
         self.amount = amount
         self.description = description
@@ -45,19 +36,19 @@ struct HistoryItemModel: Codable, Hashable {
 
 //MARK - VIEW MODEL
 class HistoryViewModel: ObservableObject {
-    @Published var history = [
-        HistoryItemModel(amount: -35.0, description: "Lanche", date: "05/05/2023", tag: "Gasto"),
-        HistoryItemModel(amount: -12.0, description: "Sorvete", date: "01/05/2023", tag: "Gasto"),
-        HistoryItemModel(amount: 80.0, description: "", date: "20/04/2023", tag: "Guardado"),
-        HistoryItemModel(amount: 150.0, description: "Mesada", date: "20/04/2023", tag: "Depósito"),
-        HistoryItemModel(amount: -18.0, description: "Uber", date: "13/04/2023", tag: "Gasto"),
-        HistoryItemModel(amount: -5.0, description: "Chocolate", date: "13/04/2023", tag: "Gasto"),
-        HistoryItemModel(amount: -31.0, description: "Presente", date: "12/04/2023", tag: "Gasto"),
-        HistoryItemModel(amount: -4.40, description: "Ônibus", date: "10/04/2023", tag: "Gasto"),
-        HistoryItemModel(amount: -20.00, description: "Cinema", date: "10/04/2023", tag: "Gasto"),
-        HistoryItemModel(amount: -4.40, description: "Ônibus", date: "10/04/2023", tag: "Gasto"),
-        HistoryItemModel(amount: -10.0, description: "Brinquedo", date: "05/04/2023", tag: "Gasto"),
-    ]
+    @Published var history: [HistoryItemModel] = []
+    
+//    HistoryItemModel(amount: -35.0, description: "Lanche", date: "05/05/2023", tag: "Gasto"),
+//    HistoryItemModel(amount: -12.0, description: "Sorvete", date: "01/05/2023", tag: "Gasto"),
+//    HistoryItemModel(amount: 80.0, description: "", date: "20/04/2023", tag: "Guardado"),
+//    HistoryItemModel(amount: 150.0, description: "Mesada", date: "20/04/2023", tag: "Depósito"),
+//    HistoryItemModel(amount: -18.0, description: "Uber", date: "13/04/2023", tag: "Gasto"),
+//    HistoryItemModel(amount: -5.0, description: "Chocolate", date: "13/04/2023", tag: "Gasto"),
+//    HistoryItemModel(amount: -31.0, description: "Presente", date: "12/04/2023", tag: "Gasto"),
+//    HistoryItemModel(amount: -4.40, description: "Ônibus", date: "10/04/2023", tag: "Gasto"),
+//    HistoryItemModel(amount: -20.00, description: "Cinema", date: "10/04/2023", tag: "Gasto"),
+//    HistoryItemModel(amount: -4.40, description: "Ônibus", date: "10/04/2023", tag: "Gasto"),
+//    HistoryItemModel(amount: -10.0, description: "Brinquedo", date: "05/04/2023", tag: "Gasto"),
     
     func getHistory() async {
         await history = HistoryService().getHistory()
@@ -74,14 +65,14 @@ class HistoryService {
         var history: [HistoryItemModel] = []
         
         let fullUrl = "https://jab-api-xh0g.onrender.com/api/v1/movimentations"
-        guard let url = URL(string: fullUrl) else { return [] }
+        guard let url = URL(string: fullUrl) else { return history }
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
-        do{
+        do {
             let (data, _) = try await URLSession.shared.data(for: request)
             let decodedResponse = try JSONDecoder().decode(WalletModel.self, from: data)
             history = decodedResponse.history
@@ -164,8 +155,14 @@ struct History: View {
 //            Rectangle()
 //                .fill(.clear)
 //                .frame(width: .infinity, height: 70)
-            ForEach(historyViewModel.history, id: \.id) { historyItem in
-                WalletHistoryItem(amount: String(historyItem.amount), description: historyItem.description, date: historyItem.date, tag: historyItem.tag)
+            if(historyViewModel.history.count == 0){
+                Text("Não há histórico para essa carteira")
+                    .foregroundColor(.gray)
+                    .padding(.top, 250)
+            } else {
+                ForEach(historyViewModel.history, id: \.id) { historyItem in
+                    WalletHistoryItem(amount: String(historyItem.amount), description: historyItem.description, date: historyItem.date, tag: historyItem.tag)
+                }
             }
         }
         .padding(EdgeInsets(top: 40, leading: 20, bottom: 25, trailing: 20))

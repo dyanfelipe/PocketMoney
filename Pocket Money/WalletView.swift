@@ -18,42 +18,98 @@ struct WalletModel: Decodable {
     enum CodingKeys: String, CodingKey {
         case id, name, amountToSpend, savedValue, history = "movimentations"
     }
+    
+    init(){
+        self.id = String()
+        self.name = String()
+        self.amountToSpend = Double()
+        self.savedValue = Double()
+        self.history = Array()
+    }
+    
+    init(id: String, name: String, amountToSpend: Double, savedValue: Double, history: [HistoryItemModel]){
+        self.id = id
+        self.name = name
+        self.amountToSpend = amountToSpend
+        self.savedValue = savedValue
+        self.history = history
+    }
 }
 
 
 //MARK - VIEW MODEL
-struct WalletViewModel {
-    let walletData = WalletModel(
-        id: "0000",
-        name: "Maria Silva Santos",
-        amountToSpend: 250.0,
-        savedValue: 510.0,
-        history: [
-            HistoryItemModel(amount: -35.0, description: "Lanche", date: "05/05/2023", tag: "Gasto"),
-            HistoryItemModel(amount: -12.0, description: "Sorvete", date: "01/05/2023", tag: "Gasto"),
-            HistoryItemModel(amount: 80.0, description: "", date: "20/04/2023", tag: "Guardado"),
-            HistoryItemModel(amount: 150.0, description: "Mesada", date: "20/04/2023", tag: "Depósito"),
-            HistoryItemModel(amount: -18.0, description: "Uber", date: "13/04/2023", tag: "Gasto"),
-        ]
-    )
+class WalletViewModel: ObservableObject {
+    @Published var parent: Bool = false
+    @Published var walletData = WalletModel()
+    
+    //    WalletModel(
+    //        id: "0000",
+    //        name: "Maria Silva Santos",
+    //        amountToSpend: 250.0,
+    //        savedValue: 510.0,
+    //        history: [
+    //            HistoryItemModel(amount: -35.0, description: "Lanche", date: "05/05/2023", tag: "Gasto"),
+    //            HistoryItemModel(amount: -12.0, description: "Sorvete", date: "01/05/2023", tag: "Gasto"),
+    //            HistoryItemModel(amount: 80.0, description: "", date: "20/04/2023", tag: "Guardado"),
+    //            HistoryItemModel(amount: 150.0, description: "Mesada", date: "20/04/2023", tag: "Depósito"),
+    //            HistoryItemModel(amount: -18.0, description: "Uber", date: "13/04/2023", tag: "Gasto"),
+    //        ]
+    //    )
+    
+    func getWallet() async {
+        await walletData = WalletService().getWallet()
+    }
+}
+
+
+//MARK - SERVICE
+class WalletService {
+    
+    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc4ODg2MGUyLTlhYjMtNDM5Yy05NGQyLWRiZjllMTRmYmM1NSIsImlhdCI6MTY4MzY2NjQ2MSwiZXhwIjoxNjgzNzUyODYxLCJzdWIiOiI3ODg4NjBlMi05YWIzLTQzOWMtOTRkMi1kYmY5ZTE0ZmJjNTUifQ.qsBM2ub2J_Ztdh_8EqLYXTM4NjB1zs7u4j5c1P6HYZ8"
+    
+    func getWallet() async -> WalletModel {
+        var wallet = WalletModel()
+        
+        let fullUrl = "https://jab-api-xh0g.onrender.com/api/v1/kids"
+        guard let url = URL(string: fullUrl) else { return wallet }
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        do {
+            let (data, _) = try await URLSession.shared.data(for: request)
+            let decodedResponse = try JSONDecoder().decode(WalletModel.self, from: data)
+            wallet = decodedResponse
+        } catch {
+            print(error.localizedDescription)
+        }
+        
+        
+        return wallet
+    }
 }
 
 
 //MARK - VIEW
 struct WalletView: View {
-    
-    let parent: Bool = false
+    @StateObject var wallet = WalletViewModel()
     
     var body: some View {
-            VStack{
-                WalletData(parent: parent)
-                ActionsButtons(parent: parent)
-                WalletHistory()
-            }
-            .accentColor(.primary)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
-            .ignoresSafeArea(edges: .bottom)
+        VStack{
+            WalletData()
+            ActionsButtons()
+            WalletHistory()
+        }
+        .accentColor(.primary)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
+        .ignoresSafeArea(edges: .bottom)
+        .environmentObject(wallet)
+        .task {
+            await wallet.getWallet()
+        }
     }
     
 }
@@ -68,8 +124,7 @@ struct Wallet_Previews: PreviewProvider {
 
 
 struct WalletData: View {
-    
-    let parent: Bool
+    @EnvironmentObject var wallet: WalletViewModel
     
     var body: some View {
         VStack {
@@ -77,20 +132,20 @@ struct WalletData: View {
                 .font(Font.system(Font.TextStyle.largeTitle, weight: Font.Weight.bold))
                 .frame(maxWidth: .infinity, alignment: .center)
                 .foregroundColor(.black)
-                .padding(.bottom, parent ? 0 : 20)
+                .padding(.bottom, wallet.parent ? 0 : 20)
             
-            if(parent){
-                Text(WalletViewModel().walletData.name)
+            if(wallet.parent){
+                Text(wallet.walletData.name)
                     .font(.system(.body, weight: .semibold))
                     .shadow(color: .white, radius: 10)
-                    .padding(.bottom, parent ? 10 : 0)
+                    .padding(.bottom, wallet.parent ? 10 : 0)
             }
             
             Text("Valor para gastar")
                 .font(Font.system(Font.TextStyle.callout))
                 .foregroundColor(.white)
             
-            Text("R$ \(WalletViewModel().walletData.amountToSpend)")
+            Text("R$ \(wallet.walletData.amountToSpend)")
                 .font(Font.system(Font.TextStyle.largeTitle, weight: Font.Weight.bold))
                 .foregroundColor(Color.white)
                 .shadow(color: Color.black, radius: 5)
@@ -100,7 +155,7 @@ struct WalletData: View {
                 .font(Font.system(Font.TextStyle.callout))
                 .foregroundColor(.white)
             
-            Text("R$ \(WalletViewModel().walletData.savedValue)")
+            Text("R$ \(wallet.walletData.savedValue)")
                 .font(Font.system(Font.TextStyle.title, weight: Font.Weight.semibold))
                 .foregroundColor(Color.white)
                 .shadow(color: Color.black, radius: 5)
@@ -116,13 +171,12 @@ struct WalletData: View {
 }
 
 struct ActionsButtons: View {
-    
-    let parent: Bool
+    @EnvironmentObject var wallet: WalletViewModel
     
     var body: some View {
         HStack {
             
-            if(parent){
+            if(wallet.parent){
                 ActionButton(emoji: "💵", sfSimbolName: nil, text: "DEPOSITAR")
                     .padding(.top, -50)
             } else {
@@ -138,10 +192,10 @@ struct ActionsButtons: View {
                 ActionButton(emoji: nil, sfSimbolName: "list.bullet", text: "HISTÓRICO")
                     .padding(.top, 30)
             }
-
+            
             Spacer()
             
-            if(parent){
+            if(wallet.parent){
                 ActionButton(emoji: "💸", sfSimbolName: nil, text: "SACAR")
                     .padding(.top, -50)
             } else {
@@ -184,6 +238,8 @@ struct ActionButton: View {
 }
 
 struct WalletHistory: View {
+    @EnvironmentObject var wallet: WalletViewModel
+    
     var body: some View {
         VStack {
             Text("Histórico")
@@ -196,12 +252,21 @@ struct WalletHistory: View {
                 .foregroundColor(.gray7)
                 .padding(.bottom, 5)
             
+            
             ScrollView {
-                ForEach(WalletViewModel().walletData.history, id: \.id) { historyItem in
-                    WalletHistoryItem(amount: String(historyItem.amount), description: historyItem.description, date: historyItem.date, tag: historyItem.tag)
+                if(wallet.walletData.history.count == 0){
+                    Text("Não há histórico para essa carteira")
+                        .foregroundColor(.gray)
+                        .padding(.top, 130)
+                } else {
+                    ForEach(wallet.walletData.history, id: \.id) { historyItem in
+                        WalletHistoryItem(amount: String(historyItem.amount), description: historyItem.description, date: historyItem.date, tag: historyItem.tag)
+                    }
                 }
             }
             .scrollIndicators(.hidden)
+            
+            
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
