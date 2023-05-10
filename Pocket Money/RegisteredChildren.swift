@@ -24,8 +24,8 @@ struct RaisedChild: Codable {
 struct Childs: Codable, Hashable {
     let id: String
     let name: String
-    let savedValue: Int
-    let amountToSpend: Int
+    let savedValue: Double
+    let amountToSpend: Double
 }
 
 // MARK: - VIEWMODEL
@@ -50,9 +50,11 @@ class RegisteredChildrenViewModel: ObservableObject {
 
         do {
             let (data, _) = try await URLSession.shared.data(for: request)
+            print(String(describing: data))
             let decodedResponse = try JSONDecoder().decode([Childs].self, from: data)
             childs = decodedResponse
         }catch {
+            print(error.localizedDescription)
             error.localizedDescription
         }
     }
