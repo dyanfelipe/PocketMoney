@@ -8,26 +8,32 @@
 import SwiftUI
 
 //MARK - MODEL
-struct WalletModel {
+struct WalletModel: Decodable {
+    let id: String
     let name: String
-    let amountToSpend: String
-    let savedValue: String
+    let amountToSpend: Double
+    let savedValue: Double
     let history: [HistoryItemModel]
+    
+    enum CodingKeys: String, CodingKey {
+        case id, name, amountToSpend, savedValue, history = "movimentations"
+    }
 }
 
 
 //MARK - VIEW MODEL
 struct WalletViewModel {
     let walletData = WalletModel(
+        id: "0000",
         name: "Maria Silva Santos",
-        amountToSpend: "250,00",
-        savedValue: "510,00",
+        amountToSpend: 250.0,
+        savedValue: 510.0,
         history: [
-            HistoryItemModel(amount: "-35,00", description: "Lanche", date: "05/05/2023", tag: "Gasto"),
-            HistoryItemModel(amount: "-12,00", description: "Sorvete", date: "01/05/2023", tag: "Gasto"),
-            HistoryItemModel(amount: "80,00", description: "", date: "20/04/2023", tag: "Guardado"),
-            HistoryItemModel(amount: "150,00", description: "Mesada", date: "20/04/2023", tag: "Depósito"),
-            HistoryItemModel(amount: "-18,00", description: "Uber", date: "13/04/2023", tag: "Gasto"),
+            HistoryItemModel(amount: -35.0, description: "Lanche", date: "05/05/2023", tag: "Gasto"),
+            HistoryItemModel(amount: -12.0, description: "Sorvete", date: "01/05/2023", tag: "Gasto"),
+            HistoryItemModel(amount: 80.0, description: "", date: "20/04/2023", tag: "Guardado"),
+            HistoryItemModel(amount: 150.0, description: "Mesada", date: "20/04/2023", tag: "Depósito"),
+            HistoryItemModel(amount: -18.0, description: "Uber", date: "13/04/2023", tag: "Gasto"),
         ]
     )
 }
@@ -190,8 +196,8 @@ struct WalletHistory: View {
                 .padding(.bottom, 5)
             
             ScrollView {
-                ForEach(WalletViewModel().walletData.history) { historyItem in
-                    WalletHistoryItem(amount: historyItem.amount, description: historyItem.description, date: historyItem.date, tag: historyItem.tag)
+                ForEach(WalletViewModel().walletData.history, id: \.id) { historyItem in
+                    WalletHistoryItem(amount: String(historyItem.amount), description: historyItem.description, date: historyItem.date, tag: historyItem.tag)
                 }
             }
             .scrollIndicators(.hidden)
