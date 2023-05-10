@@ -45,23 +45,24 @@ struct WalletView: View {
     let parent: Bool = false
     
     var body: some View {
-        NavigationStack {
             VStack{
                 WalletData(parent: parent)
                 ActionsButtons(parent: parent)
                 WalletHistory()
             }
+            .accentColor(.primary)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
             .ignoresSafeArea(edges: .bottom)
-        }
     }
     
 }
-
+// TODO: Botao nativo navigationBar esta azul validar se vai criar um novo buttom ou vai usar ele.
 struct Wallet_Previews: PreviewProvider {
     static var previews: some View {
-        WalletView()
+        NavigationStack{
+            WalletView()
+        }
     }
 }
 

@@ -83,6 +83,18 @@ class SignUpViewModel: ObservableObject {
 
 struct SignUp: View {
     @StateObject var viewModel = SignUpViewModel()
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    
+    var backButton : some View { Button(action: {
+        self.presentationMode.wrappedValue.dismiss()
+        }) {
+            HStack {
+            Image(systemName: "chevron.backward") // BackButton Image
+                    .fontWeight(.bold)
+                Text("Voltar") //translated Back button title
+            }
+        }
+    }
     
     var body: some View {
         GeometryReader { geometry in
@@ -139,7 +151,9 @@ struct SignUp: View {
                 .frame(width: geometry.size.width)
                 .frame(minHeight: geometry.size.height)
             }
+            .navigationBarItems(leading: backButton)
             .navigationTitle("Criar conta")
+            .navigationBarBackButtonHidden(true)
             .navigationBarTitleDisplayMode(.inline)
             .alert(viewModel.confirmationMessage.message, isPresented: $viewModel.showingConfirmation){
                 NavigationLink("Ok", destination: {

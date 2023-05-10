@@ -122,7 +122,7 @@ struct SingIn: View {
                     .fontWeight(.medium)
             }
             .textFieldBorderIcon()
-            
+            // TODO: Change link NavigationLink
             NavigationLink(destination: RegisteredChildren(), tag: "RegisteredChildren", selection: $selection) { EmptyView() }.buttonStyle(PlainButtonStyle())
             
             HStack{
