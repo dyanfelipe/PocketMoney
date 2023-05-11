@@ -182,76 +182,7 @@ struct RegisteredChildren: View {
                 await viewModel.getChilds()
             }
             .sheet(isPresented: $viewModel.showSheet) {
-                NavigationView {
-                    GeometryReader { geometry in
-                        ScrollView(.vertical) {
-                            VStack{
-                                HStack{
-                                    Image(systemName: "person.fill")
-                                        .foregroundColor(.purple)
-                                    TextField("Nome do filho", text: $viewModel.child.name)
-                                        .fontWeight(.medium)
-                                }
-                                .textFieldBorderIcon()
-                                
-                                HStack{
-                                    Image(systemName: "envelope.fill")
-                                        .foregroundColor(.purple)
-                                    TextField("Email", text: $viewModel.child.email)
-                                        .fontWeight(.medium)
-                                }
-                                .textFieldBorderIcon()
-                            
-                                
-                                HStack{
-                                    Image(systemName: "lock.fill")
-                                        .foregroundColor(.purple)
-                                    SecureField("Senha", text: $viewModel.child.password)
-                                        .fontWeight(.medium)
-                                }
-                                .textFieldBorderIcon()
-                                
-                                HStack{
-                                    Image(systemName: "lock.fill")
-                                        .foregroundColor(.purple)
-                                    SecureField("Confirmar senha", text: $viewModel.child.passwordConfirmation)
-                                        .fontWeight(.medium)
-                                }
-                                .textFieldBorderIcon()
-                              
-                                Button {
-                                    Task{
-                                        await viewModel.createChild()
-                                    }
-                                } label: {
-                                    Text("Cadastrar")
-                                        .fontWeight(.semibold)
-                                        .foregroundColor(.white)
-                                        .frame(maxWidth: .infinity, alignment: .center)
-                                        .padding(4)
-                                }
-                                .padding(.horizontal, 20)
-                                .buttonStyle(.borderedProminent)
-                                .tint(.purple)
-                                .padding(.vertical)
-                            }
-                            .frame(width: geometry.size.width)
-                            .frame(minHeight: geometry.size.height)
-                        }
-                        .navigationTitle("Criar acesso")
-                        .navigationBarTitleDisplayMode(.inline)
-                        .toolbar{
-                            ToolbarItem(placement: .navigationBarLeading) {
-                                Button {
-                                    viewModel.showSheetToggle()
-                                } label: {
-                                    Image(systemName: "chevron.backward")
-                                        .fontWeight(.bold)
-                                }
-                            }
-                        }
-                    }
-                }
+                AddNewChild()
             }
         }
         .navigationBarBackButtonHidden(true)
@@ -272,6 +203,83 @@ struct RegisteredChildren: View {
     }
         
 }
+
+struct AddNewChild: View {
+    @EnvironmentObject var viewModel: RegisteredChildrenViewModel
+    var body: some View {
+        NavigationView {
+            GeometryReader { geometry in
+                ScrollView(.vertical) {
+                    VStack{
+                        HStack{
+                            Image(systemName: "person.fill")
+                                .foregroundColor(.purple)
+                            TextField("Nome do filho", text: $viewModel.child.name)
+                                .fontWeight(.medium)
+                        }
+                        .textFieldBorderIcon()
+                        
+                        HStack{
+                            Image(systemName: "envelope.fill")
+                                .foregroundColor(.purple)
+                            TextField("Email", text: $viewModel.child.email)
+                                .fontWeight(.medium)
+                        }
+                        .textFieldBorderIcon()
+                    
+                        
+                        HStack{
+                            Image(systemName: "lock.fill")
+                                .foregroundColor(.purple)
+                            SecureField("Senha", text: $viewModel.child.password)
+                                .fontWeight(.medium)
+                        }
+                        .textFieldBorderIcon()
+                        
+                        HStack{
+                            Image(systemName: "lock.fill")
+                                .foregroundColor(.purple)
+                            SecureField("Confirmar senha", text: $viewModel.child.passwordConfirmation)
+                                .fontWeight(.medium)
+                        }
+                        .textFieldBorderIcon()
+                      
+                        Button {
+                            Task{
+                                await viewModel.createChild()
+                            }
+                        } label: {
+                            Text("Cadastrar")
+                                .fontWeight(.semibold)
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .padding(4)
+                        }
+                        .padding(.horizontal, 20)
+                        .buttonStyle(.borderedProminent)
+                        .tint(.purple)
+                        .padding(.vertical)
+                    }
+                    .frame(width: geometry.size.width)
+                    .frame(minHeight: geometry.size.height)
+                }
+                .navigationTitle("Criar acesso")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar{
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button {
+                            viewModel.showSheetToggle()
+                        } label: {
+                            Image(systemName: "chevron.backward")
+                                .fontWeight(.bold)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 struct RegisteredChildren_Previews: PreviewProvider {
     static let transactionListVM: RegisteredChildrenViewModel = {
