@@ -121,6 +121,8 @@ struct SingIn: View {
                 Image(systemName: "envelope.fill")
                     .foregroundColor(.purple)
                 TextField("E-mail", text: $viewModel.singInAccount.email)
+                    .autocapitalization(.none)
+                        .keyboardType(.emailAddress)
                     .fontWeight(.medium)
             }
             .textFieldBorderIcon()
