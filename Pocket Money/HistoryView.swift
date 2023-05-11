@@ -59,7 +59,7 @@ class HistoryViewModel: ObservableObject {
 //MARK - SERVICE
 class HistoryService {
     
-    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc4ODg2MGUyLTlhYjMtNDM5Yy05NGQyLWRiZjllMTRmYmM1NSIsImlhdCI6MTY4MzY2NjQ2MSwiZXhwIjoxNjgzNzUyODYxLCJzdWIiOiI3ODg4NjBlMi05YWIzLTQzOWMtOTRkMi1kYmY5ZTE0ZmJjNTUifQ.qsBM2ub2J_Ztdh_8EqLYXTM4NjB1zs7u4j5c1P6HYZ8"
+    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc4ODg2MGUyLTlhYjMtNDM5Yy05NGQyLWRiZjllMTRmYmM1NSIsImlhdCI6MTY4Mzc1NjM2MSwiZXhwIjoxNjgzODQyNzYxLCJzdWIiOiI3ODg4NjBlMi05YWIzLTQzOWMtOTRkMi1kYmY5ZTE0ZmJjNTUifQ.zfk7-sK2zKB6dId1pj9p2ikOlCrOywuRk8TlMXZFqbM"
     
     func getHistory() async -> [HistoryItemModel] {
         var history: [HistoryItemModel] = []
@@ -144,6 +144,7 @@ struct Title: View {
                 .padding(.top, -450)
         )
         .zIndex(1)
+        //.padding(.top, -50)
     }
 }
 
@@ -151,21 +152,25 @@ struct History: View {
     @EnvironmentObject var historyViewModel: HistoryViewModel
     
     var body: some View {
-        ScrollView {
-//            Rectangle()
-//                .fill(.clear)
-//                .frame(width: .infinity, height: 70)
-            if(historyViewModel.history.count == 0){
-                Text("Não há histórico para essa carteira")
-                    .foregroundColor(.gray)
-                    .padding(.top, 250)
-            } else {
-                ForEach(historyViewModel.history, id: \.id) { historyItem in
-                    WalletHistoryItem(amount: String(historyItem.amount), description: historyItem.description, date: historyItem.date, tag: historyItem.tag)
+        GeometryReader { proxy in
+            ScrollView {
+    //            Rectangle()
+    //                .fill(.clear)
+    //                .frame(width: .infinity, height: 70)
+                if(historyViewModel.history.count == 0){
+                    Text("Não há histórico para essa carteira")
+                        .frame(maxWidth: .infinity)
+                        .foregroundColor(.gray)
+                        .padding(.top, proxy.size.height * 0.4)
+                } else {
+                    ForEach(historyViewModel.history, id: \.id) { historyItem in
+                        WalletHistoryItem(amount: historyItem.amount, description: historyItem.description, date: historyItem.date, tag: historyItem.tag)
+                    }
                 }
             }
+            .padding(EdgeInsets(top: 40, leading: 20, bottom: 25, trailing: 20))
+            .scrollIndicators(.hidden)
         }
-        .padding(EdgeInsets(top: 40, leading: 20, bottom: 25, trailing: 20))
-        .scrollIndicators(.hidden)
+        
     }
 }

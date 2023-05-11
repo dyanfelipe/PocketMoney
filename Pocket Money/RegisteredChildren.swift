@@ -135,7 +135,7 @@ struct RegisteredChildren: View {
                     let savedValue = viewModel.convetRealToCentsDecimal(value: String(child.savedValue))
                     Section(child.name) {
                         NavigationLink{
-                            WalletView()
+                            WalletView(childId: child.id)
                         } label:{
                             GroupBox() {
                                 Text("Valor para gastar: R$ \(amountToSpend)")

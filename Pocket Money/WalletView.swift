@@ -65,7 +65,7 @@ class WalletViewModel: ObservableObject {
 //MARK - SERVICE
 class WalletService {
     
-    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc4ODg2MGUyLTlhYjMtNDM5Yy05NGQyLWRiZjllMTRmYmM1NSIsImlhdCI6MTY4MzY2NjQ2MSwiZXhwIjoxNjgzNzUyODYxLCJzdWIiOiI3ODg4NjBlMi05YWIzLTQzOWMtOTRkMi1kYmY5ZTE0ZmJjNTUifQ.qsBM2ub2J_Ztdh_8EqLYXTM4NjB1zs7u4j5c1P6HYZ8"
+    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc4ODg2MGUyLTlhYjMtNDM5Yy05NGQyLWRiZjllMTRmYmM1NSIsImlhdCI6MTY4Mzc1NjM2MSwiZXhwIjoxNjgzODQyNzYxLCJzdWIiOiI3ODg4NjBlMi05YWIzLTQzOWMtOTRkMi1kYmY5ZTE0ZmJjNTUifQ.zfk7-sK2zKB6dId1pj9p2ikOlCrOywuRk8TlMXZFqbM"
     
     func getWallet() async -> WalletModel {
         var wallet = WalletModel()
@@ -85,8 +85,6 @@ class WalletService {
         } catch {
             print(error.localizedDescription)
         }
-        
-        
         return wallet
     }
 }
@@ -95,6 +93,7 @@ class WalletService {
 //MARK - VIEW
 struct WalletView: View {
     @StateObject var wallet = WalletViewModel()
+    @State var childId: String?
     
     var body: some View {
         VStack{
@@ -102,13 +101,13 @@ struct WalletView: View {
             ActionsButtons()
             WalletHistory()
         }
-        .accentColor(.primary)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
         .ignoresSafeArea(edges: .bottom)
         .environmentObject(wallet)
         .task {
             await wallet.getWallet()
+            print(childId)
         }
     }
     
@@ -145,7 +144,7 @@ struct WalletData: View {
                 .font(Font.system(Font.TextStyle.callout))
                 .foregroundColor(.white)
             
-            Text("R$ \(wallet.walletData.amountToSpend)")
+            Text("R$ \(Utils().formatNumberToReal(value: wallet.walletData.amountToSpend))")
                 .font(Font.system(Font.TextStyle.largeTitle, weight: Font.Weight.bold))
                 .foregroundColor(Color.white)
                 .shadow(color: Color.black, radius: 5)
@@ -155,7 +154,7 @@ struct WalletData: View {
                 .font(Font.system(Font.TextStyle.callout))
                 .foregroundColor(.white)
             
-            Text("R$ \(wallet.walletData.savedValue)")
+            Text("R$ \(Utils().formatNumberToReal(value:  wallet.walletData.savedValue))")
                 .font(Font.system(Font.TextStyle.title, weight: Font.Weight.semibold))
                 .foregroundColor(Color.white)
                 .shadow(color: Color.black, radius: 5)
@@ -165,8 +164,9 @@ struct WalletData: View {
                 .fill(.purple.gradient)
                 .frame(width: 500, height: 500)
                 .shadow(radius: 10)
-                .padding(.top, -130)
+                .padding(.top, -150)
         )
+        //.padding(.top, -50)
     }
 }
 
@@ -241,39 +241,39 @@ struct WalletHistory: View {
     @EnvironmentObject var wallet: WalletViewModel
     
     var body: some View {
-        VStack {
-            Text("Histórico")
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .font(Font.system(Font.TextStyle.title, weight: Font.Weight.bold))
-            
-            Text("5 últimas movimentações")
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .font(Font.system(Font.TextStyle.caption))
-                .foregroundColor(.gray7)
-                .padding(.bottom, 5)
-            
-            
-            ScrollView {
-                if(wallet.walletData.history.count == 0){
-                    Text("Não há histórico para essa carteira")
-                        .foregroundColor(.gray)
-                        .padding(.top, 130)
-                } else {
-                    ForEach(wallet.walletData.history, id: \.id) { historyItem in
-                        WalletHistoryItem(amount: String(historyItem.amount), description: historyItem.description, date: historyItem.date, tag: historyItem.tag)
+        GeometryReader { proxy in
+            VStack {
+                Text("Histórico")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .font(Font.system(Font.TextStyle.title, weight: Font.Weight.bold))
+                
+                Text("5 últimas movimentações")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .font(Font.system(Font.TextStyle.caption))
+                    .foregroundColor(.gray7)
+                    .padding(.bottom, 5)
+                
+                
+                ScrollView {
+                    if(wallet.walletData.history.count == 0){
+                        Text("Não há histórico para essa carteira")
+                            .foregroundColor(.gray)
+                            .padding(.top, proxy.size.height * 0.3)
+                    } else {
+                        ForEach(wallet.walletData.history, id: \.id) { historyItem in
+                            WalletHistoryItem(amount: historyItem.amount, description: historyItem.description, date: historyItem.date, tag: historyItem.tag)
+                        }
                     }
                 }
+                .scrollIndicators(.hidden)
             }
-            .scrollIndicators(.hidden)
-            
-            
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
 struct WalletHistoryItem: View {
-    let amount: String
+    let amount: Double
     let description: String
     let date: String
     let tag: String
@@ -281,24 +281,27 @@ struct WalletHistoryItem: View {
     var body: some View {
         HStack {
             VStack {
-                Text((amount.contains("-") ? "-" : "+") + " R$ \(amount.replacing("-", with: ""))")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .font(.system(.headline))
-                    .foregroundColor(amount.contains("-") ? .red : .green)
+                Text(
+                    ((tag == "Gasto" || tag == "Saque") ? "-" : "+") +
+                    " R$ \(Utils().formatNumberToReal(value: amount))"
+                )
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .font(.system(.headline))
+                .foregroundColor((tag == "Gasto" || tag == "Saque") ? .red : .green)
                 
                 if(description != ""){
                     Text(description)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .font(Font.system(Font.TextStyle.caption))
                         .foregroundColor(.gray7)
-                        .padding(.leading, amount.contains("-") ? 12 : 15)
+                        .padding(.leading, (tag == "Gasto" || tag == "Saque") ? 12 : 15)
                 }
                 
-                Text(date)
+                Text(Utils().formatDate(dateString: date))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .font(Font.system(Font.TextStyle.caption))
                     .foregroundColor(.gray)
-                    .padding(.leading, amount.contains("-") ? 12 : 15)
+                    .padding(.leading, (tag == "Gasto" || tag == "Saque") ? 12 : 15)
                 
                 if(description == ""){
                     Text("")

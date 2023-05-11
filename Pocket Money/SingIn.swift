@@ -66,9 +66,11 @@ class SingInViewModel: ObservableObject {
     @Published var showingConfirmation: Bool = false
     @Published var userIsAuthenticated: Bool = false
     @AppStorage("token") var token = ""
+    @AppStorage("parent") var parent = false
     
-    func authenticateUser(accessToken: String) {
+    func authenticateUser(accessToken: String, parent: Bool) {
         token = accessToken
+        self.parent = parent
         userIsAuthenticated = true
     }
     
@@ -83,7 +85,7 @@ class SingInViewModel: ObservableObject {
         token = ""
     }
     
-    func placeOrder() async {
+    func login() async {
         guard let encoded = try? JSONEncoder().encode(singInAccount) else {
             print("Failed to encode order")
             return
@@ -96,7 +98,7 @@ class SingInViewModel: ObservableObject {
         do {
             let (data, _) = try await URLSession.shared.upload(for: request, from: encoded)
             let authenticatedUser = try JSONDecoder().decode(Auth.self, from: data)
-            authenticateUser(accessToken: authenticatedUser.accessToken)
+            authenticateUser(accessToken: authenticatedUser.accessToken, parent: authenticatedUser.parent)
         } catch  {
             self.showingConfirmation = true
         }
@@ -124,6 +126,7 @@ struct SingIn: View {
             .textFieldBorderIcon()
             // TODO: Change link NavigationLink
             NavigationLink(destination: RegisteredChildren(), tag: "RegisteredChildren", selection: $selection) { EmptyView() }.buttonStyle(PlainButtonStyle())
+            NavigationLink(destination: WalletView(), tag: "WhalletView", selection: $selection) { EmptyView() }.buttonStyle(PlainButtonStyle())
             
             HStack{
                 Image(systemName: "lock.fill")
@@ -134,8 +137,12 @@ struct SingIn: View {
             
             Button {
                 Task {
-                    await viewModel.placeOrder()
-                    selection = "RegisteredChildren"
+                    await viewModel.login()
+                    if(viewModel.parent){
+                        selection = "RegisteredChildren"
+                    }else {
+                        selection = "WhalletView"
+                    }
                 }
             } label: {
                 Text("Entrar")

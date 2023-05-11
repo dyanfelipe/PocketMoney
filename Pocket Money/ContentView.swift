@@ -33,7 +33,11 @@ struct ContentView: View {
     var body: some View {
         NavigationStack{
             if singInViewModel.userIsAuthenticated {
-                RegisteredChildren()
+                if(singInViewModel.parent){
+                    RegisteredChildren()
+                } else {
+                    WalletView()
+                }
             }else {
                 VStack {
                     CarouselImageText(viewModel: $viewModel)
