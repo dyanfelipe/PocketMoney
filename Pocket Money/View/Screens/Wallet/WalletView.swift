@@ -52,7 +52,7 @@ struct WalletView: View {
             }
             
         }
-        //.navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(.inline)
         .environmentObject(wallet)
         .onAppear {
             Task{
