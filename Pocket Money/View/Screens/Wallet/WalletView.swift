@@ -9,6 +9,7 @@ import SwiftUI
 
 struct WalletView: View {
     @StateObject var wallet = WalletViewModel()
+    @EnvironmentObject var singInViewModel: SingInViewModel
     var childId: String?
     
     var body: some View {
@@ -20,6 +21,38 @@ struct WalletView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
         .ignoresSafeArea(edges: .bottom)
+        .navigationBarBackButtonHidden(wallet.parent ? false : true)
+        //.navigationBarItems(leading: Teste())
+        .toolbar{
+            ToolbarItem(placement: .navigationBarLeading) {
+                if(!wallet.parent){
+                    
+                    Button {
+                        print("LOGOUUUUUUT")
+                        singInViewModel.userIsAuthenticated = false
+                        singInViewModel.token = ""
+                        NavigationLink("Teste") {
+                            ContentView()
+                        }
+                    } label: {
+                        ToolBarButton(imageName: "arrow.backward.square")
+                    }
+                }
+            }
+        }
+        .toolbar{
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    Task{
+                        await wallet.getWallet(chielId: childId)
+                    }
+                } label: {
+                    ToolBarButton(imageName: "arrow.clockwise")
+                }
+            }
+            
+        }
+        //.navigationBarTitleDisplayMode(.inline)
         .environmentObject(wallet)
         .onAppear {
             Task{
@@ -29,12 +62,36 @@ struct WalletView: View {
     }
     
 }
+
+
+struct Teste: View {
+    var body: some View {
+        HStack {
+        Image(systemName: "chevron.backward") // BackButton Image
+                .fontWeight(.bold)
+            Text("Sair") //translated Back button title
+        }
+        .foregroundColor(.gray7)
+    }
+}
+
 // TODO: Botao nativo navigationBar esta azul validar se vai criar um novo buttom ou vai usar ele.
 struct Wallet_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack{
             WalletView()
         }
+    }
+}
+
+struct ToolBarButton: View {
+    let imageName: String
+    
+    var body: some View {
+        Image(systemName: imageName)
+            .font(.system(.title3, weight: .bold))
+            .foregroundColor(.black)
+            .shadow(color: .white, radius: 5)
     }
 }
 

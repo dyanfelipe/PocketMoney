@@ -28,7 +28,6 @@ struct ContentViewModel {
 struct ContentView: View {
     @State var viewModel = ContentViewModel()
     @EnvironmentObject var singInViewModel: SingInViewModel
-
     
     var body: some View {
         NavigationStack{
