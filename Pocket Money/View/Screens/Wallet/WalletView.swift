@@ -59,6 +59,10 @@ struct WalletView: View {
                 await wallet.getWallet(chielId: childId)
             }
         }
+        
+        .sheet(isPresented: $wallet.isPresentRecordExpenses) {
+            Text("Teste")
+        }
     }
     
 }
@@ -155,8 +159,12 @@ struct ActionsButtons: View {
                 ActionButton(emoji: "💵", sfSimbolName: nil, text: "DEPOSITAR")
                     .padding(.top, -50)
             } else {
-                ActionButton(emoji: "💸", sfSimbolName: nil, text: "REGISTRAR GASTO")
-                    .padding(.top, -50)
+                Button {
+                    wallet.isPresentRecordExpenses.toggle()
+                } label: {
+                    ActionButton(emoji: "💸", sfSimbolName: nil, text: "REGISTRAR GASTO")
+                        .padding(.top, -50)
+                }
             }
             
             Spacer()

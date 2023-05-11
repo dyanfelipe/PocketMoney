@@ -10,6 +10,7 @@ import Foundation
 class WalletViewModel: ObservableObject {
     @Published var parent: Bool = UserDefaults.standard.bool(forKey: "parent")
     @Published var walletData = WalletModel()
+    @Published var isPresentRecordExpenses = false
     
     //    WalletModel(
     //        id: "0000",
