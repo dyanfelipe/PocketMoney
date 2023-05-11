@@ -29,8 +29,8 @@ extension View {
 
 // MARK: - Model
 struct SingInAccount: Codable {
-    var email: String = "olivier@mail.com"
-    var password: String = "bestPassw0rd"
+    var email: String = ""
+    var password: String = ""
 }
 
 struct User: Decodable {

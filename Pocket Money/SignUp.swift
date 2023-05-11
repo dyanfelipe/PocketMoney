@@ -15,10 +15,17 @@ enum Profile: String, CaseIterable, Identifiable {
 
 // MARK: - Model
 struct CreatedAccount: Codable {
-    var name:String = "olivier"
-    var email: String = "olivier@mail.com"
-    var password: String = "bestPassw0rd"
-    var confirmPassword: String = "bestPassw0rd"
+    var name:String = ""
+    var email: String = ""
+    var password: String = ""
+    var confirmPassword: String = ""
+    
+    enum CodingKeys: String, CodingKey {
+        case name
+        case email
+        case password
+        case confirmPassword = "passwordConfirmation"
+   }
 }
 
 struct APIError: Error {
@@ -71,10 +78,14 @@ class SignUpViewModel: ObservableObject {
         request.httpMethod = "POST"
         
         do {
+            print(String(data: encoded, encoding: .utf8))
             let (data, _) = try await URLSession.shared.upload(for: request, from: encoded)
+            print(String(data: data, encoding: .utf8))
             let authenticatedUser = try JSONDecoder().decode(CreateAccountAuth.self, from: data)
             confirmationMessage = AlertSingUp(message: "Usuário criado com sucesso", description: "Você já pode entrar com o novo usuário!")
+            self.showingConfirmation = true
         } catch {
+            print(String(describing: error.localizedDescription))
             confirmationMessage = AlertSingUp(message: "Recurso existente", description: "Já existe um usuário cadastrado com esse e-mail")
             self.showingConfirmation = true
         }

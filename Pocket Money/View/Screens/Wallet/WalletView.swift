@@ -22,7 +22,6 @@ struct WalletView: View {
         .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
         .ignoresSafeArea(edges: .bottom)
         .navigationBarBackButtonHidden(wallet.parent ? false : true)
-        //.navigationBarItems(leading: Teste())
         .toolbar{
             ToolbarItem(placement: .navigationBarLeading) {
                 if(!wallet.parent){
@@ -59,7 +58,6 @@ struct WalletView: View {
                 await wallet.getWallet(chielId: childId)
             }
         }
-        
         .sheet(isPresented: $wallet.isPresentRecordExpenses) {
             Text("Teste")
         }
