@@ -59,7 +59,18 @@ struct WalletView: View {
             }
         }
         .sheet(isPresented: $wallet.isPresentRecordExpenses) {
-            Text("Teste")
+            RecordExpenses()
+        }
+        .sheet(isPresented: $wallet.isPresentSaveMoney) {
+            SaveMoneyView()
+        }
+        
+        .sheet(isPresented: $wallet.isPresentDeposit) {
+            DepositView()
+        }
+        
+        .sheet(isPresented: $wallet.isPresentWithdraw) {
+            WithdrawView()
         }
     }
     
@@ -154,8 +165,12 @@ struct ActionsButtons: View {
         HStack {
             
             if(wallet.parent){
-                ActionButton(emoji: "💵", sfSimbolName: nil, text: "DEPOSITAR")
-                    .padding(.top, -50)
+                Button {
+                    wallet.isPresentDeposit.toggle()
+                } label: {
+                    ActionButton(emoji: "💵", sfSimbolName: nil, text: "DEPOSITAR")
+                        .padding(.top, -50)
+                }
             } else {
                 Button {
                     wallet.isPresentRecordExpenses.toggle()
@@ -177,11 +192,19 @@ struct ActionsButtons: View {
             Spacer()
             
             if(wallet.parent){
-                ActionButton(emoji: "💸", sfSimbolName: nil, text: "SACAR")
-                    .padding(.top, -50)
+                Button {
+                    wallet.isPresentWithdraw.toggle()
+                } label: {
+                    ActionButton(emoji: "💸", sfSimbolName: nil, text: "SACAR")
+                        .padding(.top, -50)
+                }
             } else {
-                ActionButton(emoji: "💰", sfSimbolName: nil, text: "GUARDAR DINHEIRO")
-                    .padding(.top, -50)
+                Button {
+                    wallet.isPresentSaveMoney.toggle()
+                } label: {
+                    ActionButton(emoji: "💰", sfSimbolName: nil, text: "GUARDAR DINHEIRO")
+                        .padding(.top, -50)
+                }
             }
         }
         .frame(maxWidth: .infinity, minHeight: 130, alignment: .top)

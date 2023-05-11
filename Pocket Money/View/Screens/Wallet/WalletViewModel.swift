@@ -11,6 +11,9 @@ class WalletViewModel: ObservableObject {
     @Published var parent: Bool = UserDefaults.standard.bool(forKey: "parent")
     @Published var walletData = WalletModel()
     @Published var isPresentRecordExpenses = false
+    @Published var isPresentSaveMoney = false
+    @Published var isPresentDeposit = false
+    @Published var isPresentWithdraw = false
     
     //    WalletModel(
     //        id: "0000",

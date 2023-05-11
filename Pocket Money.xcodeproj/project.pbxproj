@@ -17,6 +17,10 @@
 		5BE501732A0D318B004C8AE3 /* HistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BE501722A0D318B004C8AE3 /* HistoryViewModel.swift */; };
 		5BE501752A0D31B1004C8AE3 /* HistoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BE501742A0D31B1004C8AE3 /* HistoryService.swift */; };
 		5BE501772A0D3207004C8AE3 /* WalletHistoryItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BE501762A0D3207004C8AE3 /* WalletHistoryItemView.swift */; };
+		5BE5017A2A0DAA34004C8AE3 /* RecordExpensesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BE501792A0DAA34004C8AE3 /* RecordExpensesView.swift */; };
+		5BE5017C2A0DAC6D004C8AE3 /* SaveMoneyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BE5017B2A0DAC6D004C8AE3 /* SaveMoneyView.swift */; };
+		5BE501802A0DAEEA004C8AE3 /* DepositView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BE5017F2A0DAEEA004C8AE3 /* DepositView.swift */; };
+		5BE501832A0DAFD4004C8AE3 /* WithdrawView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BE501822A0DAFD4004C8AE3 /* WithdrawView.swift */; };
 		861644702A0443510025CC3F /* SignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8616446F2A0443510025CC3F /* SignUp.swift */; };
 		861644722A0459190025CC3F /* RegisteredChildren.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861644712A0459190025CC3F /* RegisteredChildren.swift */; };
 		861644742A048F440025CC3F /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861644732A048F440025CC3F /* Extension.swift */; };
@@ -39,6 +43,10 @@
 		5BE501722A0D318B004C8AE3 /* HistoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViewModel.swift; sourceTree = "<group>"; };
 		5BE501742A0D31B1004C8AE3 /* HistoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryService.swift; sourceTree = "<group>"; };
 		5BE501762A0D3207004C8AE3 /* WalletHistoryItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletHistoryItemView.swift; sourceTree = "<group>"; };
+		5BE501792A0DAA34004C8AE3 /* RecordExpensesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordExpensesView.swift; sourceTree = "<group>"; };
+		5BE5017B2A0DAC6D004C8AE3 /* SaveMoneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveMoneyView.swift; sourceTree = "<group>"; };
+		5BE5017F2A0DAEEA004C8AE3 /* DepositView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepositView.swift; sourceTree = "<group>"; };
+		5BE501822A0DAFD4004C8AE3 /* WithdrawView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WithdrawView.swift; sourceTree = "<group>"; };
 		8616446F2A0443510025CC3F /* SignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUp.swift; sourceTree = "<group>"; };
 		861644712A0459190025CC3F /* RegisteredChildren.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisteredChildren.swift; sourceTree = "<group>"; };
 		861644732A048F440025CC3F /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
@@ -82,6 +90,10 @@
 		5BE501632A0D2EA2004C8AE3 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				5BE501812A0DAFBD004C8AE3 /* Withdraw */,
+				5BE5017E2A0DAED9004C8AE3 /* Deposit */,
+				5BE5017D2A0DAEB7004C8AE3 /* SaveMoney */,
+				5BE501782A0DA9FD004C8AE3 /* RecordExpenses */,
 				5BE501682A0D2F97004C8AE3 /* Wallet */,
 				5BE5016F2A0D3103004C8AE3 /* History */,
 			);
@@ -138,6 +150,38 @@
 				5BE501722A0D318B004C8AE3 /* HistoryViewModel.swift */,
 			);
 			path = History;
+			sourceTree = "<group>";
+		};
+		5BE501782A0DA9FD004C8AE3 /* RecordExpenses */ = {
+			isa = PBXGroup;
+			children = (
+				5BE501792A0DAA34004C8AE3 /* RecordExpensesView.swift */,
+			);
+			path = RecordExpenses;
+			sourceTree = "<group>";
+		};
+		5BE5017D2A0DAEB7004C8AE3 /* SaveMoney */ = {
+			isa = PBXGroup;
+			children = (
+				5BE5017B2A0DAC6D004C8AE3 /* SaveMoneyView.swift */,
+			);
+			path = SaveMoney;
+			sourceTree = "<group>";
+		};
+		5BE5017E2A0DAED9004C8AE3 /* Deposit */ = {
+			isa = PBXGroup;
+			children = (
+				5BE5017F2A0DAEEA004C8AE3 /* DepositView.swift */,
+			);
+			path = Deposit;
+			sourceTree = "<group>";
+		};
+		5BE501812A0DAFBD004C8AE3 /* Withdraw */ = {
+			isa = PBXGroup;
+			children = (
+				5BE501822A0DAFD4004C8AE3 /* WithdrawView.swift */,
+			);
+			path = Withdraw;
 			sourceTree = "<group>";
 		};
 		86A531D42A030F86003055A1 = {
@@ -256,7 +300,9 @@
 			files = (
 				5BBFE9142A073BA5008AAFC3 /* WalletView.swift in Sources */,
 				861644722A0459190025CC3F /* RegisteredChildren.swift in Sources */,
+				5BE5017A2A0DAA34004C8AE3 /* RecordExpensesView.swift in Sources */,
 				5BE501752A0D31B1004C8AE3 /* HistoryService.swift in Sources */,
+				5BE5017C2A0DAC6D004C8AE3 /* SaveMoneyView.swift in Sources */,
 				5BE501712A0D313C004C8AE3 /* History.swift in Sources */,
 				86A0E1092A04240C009A1107 /* SingIn.swift in Sources */,
 				5BE501772A0D3207004C8AE3 /* WalletHistoryItemView.swift in Sources */,
@@ -271,6 +317,8 @@
 				5BE5016C2A0D306C004C8AE3 /* WalletViewModel.swift in Sources */,
 				86A531E32A030F86003055A1 /* ContentView.swift in Sources */,
 				86A531E12A030F86003055A1 /* Pocket_MoneyApp.swift in Sources */,
+				5BE501802A0DAEEA004C8AE3 /* DepositView.swift in Sources */,
+				5BE501832A0DAFD4004C8AE3 /* WithdrawView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
