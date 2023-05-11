@@ -9,10 +9,10 @@ import SwiftUI
 
 // MARK: - MODEL
 struct NewChild: Codable {
-    var name: String = "Breno Gabriel Ferreira2"
-    var email: String = "breno_ferreira2@grupoannaprado.com.br"
-    var password: String = "senhanoSpace"
-    var passwordConfirmation: String = "senhanoSpace"
+    var name: String = ""
+    var email: String = ""
+    var password: String = ""
+    var passwordConfirmation: String = ""
 }
 
 struct RaisedChild: Codable {
