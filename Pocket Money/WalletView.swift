@@ -39,7 +39,7 @@ struct WalletModel: Decodable {
 
 //MARK - VIEW MODEL
 class WalletViewModel: ObservableObject {
-    @Published var parent: Bool = false
+    @Published var parent: Bool = UserDefaults.standard.bool(forKey: "parent")
     @Published var walletData = WalletModel()
     
     //    WalletModel(
@@ -56,8 +56,8 @@ class WalletViewModel: ObservableObject {
     //        ]
     //    )
     
-    func getWallet() async {
-        await walletData = WalletService().getWallet()
+    func getWallet(chielId: String?) async {
+        await walletData = WalletService().getWallet(chielId: chielId)
     }
 }
 
@@ -65,12 +65,18 @@ class WalletViewModel: ObservableObject {
 //MARK - SERVICE
 class WalletService {
     
-    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc4ODg2MGUyLTlhYjMtNDM5Yy05NGQyLWRiZjllMTRmYmM1NSIsImlhdCI6MTY4Mzc1NjM2MSwiZXhwIjoxNjgzODQyNzYxLCJzdWIiOiI3ODg4NjBlMi05YWIzLTQzOWMtOTRkMi1kYmY5ZTE0ZmJjNTUifQ.zfk7-sK2zKB6dId1pj9p2ikOlCrOywuRk8TlMXZFqbM"
+    let token = UserDefaults.standard.string(forKey: "token") ?? ""
     
-    func getWallet() async -> WalletModel {
+    func getWallet(chielId: String?) async -> WalletModel {
         var wallet = WalletModel()
+        var fullUrl = String()
         
-        let fullUrl = "https://jab-api-xh0g.onrender.com/api/v1/kids"
+        if let id = chielId {
+            fullUrl = "https://jab-api-xh0g.onrender.com/api/v1/parents/children/\(id)"
+        } else {
+            fullUrl = "https://jab-api-xh0g.onrender.com/api/v1/kids"
+        }
+        
         guard let url = URL(string: fullUrl) else { return wallet }
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -93,21 +99,22 @@ class WalletService {
 //MARK - VIEW
 struct WalletView: View {
     @StateObject var wallet = WalletViewModel()
-    @State var childId: String?
+    var childId: String?
     
     var body: some View {
         VStack{
             WalletData()
-            ActionsButtons()
+            ActionsButtons(childId: childId)
             WalletHistory()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
         .ignoresSafeArea(edges: .bottom)
         .environmentObject(wallet)
-        .task {
-            await wallet.getWallet()
-            print(childId)
+        .onAppear {
+            Task{
+                await wallet.getWallet(chielId: childId)
+            }
         }
     }
     
@@ -172,6 +179,7 @@ struct WalletData: View {
 
 struct ActionsButtons: View {
     @EnvironmentObject var wallet: WalletViewModel
+    var childId: String?
     
     var body: some View {
         HStack {
@@ -187,7 +195,7 @@ struct ActionsButtons: View {
             Spacer()
             
             NavigationLink {
-                HistoryView()
+                HistoryView(childId: childId)
             } label: {
                 ActionButton(emoji: nil, sfSimbolName: "list.bullet", text: "HISTÓRICO")
                     .padding(.top, 30)

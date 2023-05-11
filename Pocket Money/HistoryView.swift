@@ -50,8 +50,8 @@ class HistoryViewModel: ObservableObject {
 //    HistoryItemModel(amount: -4.40, description: "Ônibus", date: "10/04/2023", tag: "Gasto"),
 //    HistoryItemModel(amount: -10.0, description: "Brinquedo", date: "05/04/2023", tag: "Gasto"),
     
-    func getHistory() async {
-        await history = HistoryService().getHistory()
+    func getHistory(childId: String?) async {
+        await history = HistoryService().getHistory(childId: childId)
     }
 }
 
@@ -59,12 +59,18 @@ class HistoryViewModel: ObservableObject {
 //MARK - SERVICE
 class HistoryService {
     
-    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc4ODg2MGUyLTlhYjMtNDM5Yy05NGQyLWRiZjllMTRmYmM1NSIsImlhdCI6MTY4Mzc1NjM2MSwiZXhwIjoxNjgzODQyNzYxLCJzdWIiOiI3ODg4NjBlMi05YWIzLTQzOWMtOTRkMi1kYmY5ZTE0ZmJjNTUifQ.zfk7-sK2zKB6dId1pj9p2ikOlCrOywuRk8TlMXZFqbM"
+    let token = UserDefaults.standard.string(forKey: "token") ?? ""
     
-    func getHistory() async -> [HistoryItemModel] {
+    func getHistory(childId: String?) async -> [HistoryItemModel] {
         var history: [HistoryItemModel] = []
+        var fullUrl = String()
         
-        let fullUrl = "https://jab-api-xh0g.onrender.com/api/v1/movimentations"
+        if let id = childId {
+            fullUrl = "https://jab-api-xh0g.onrender.com/api/v1/movimentations/\(id)"
+        } else {
+            fullUrl = "https://jab-api-xh0g.onrender.com/api/v1/movimentations"
+        }
+        
         guard let url = URL(string: fullUrl) else { return history }
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -89,6 +95,7 @@ class HistoryService {
 //MARK - VIEW
 struct HistoryView: View {
     @StateObject var historyViewModel = HistoryViewModel()
+    var childId: String?
     
     var body: some View {
         
@@ -100,11 +107,13 @@ struct HistoryView: View {
         .ignoresSafeArea(edges: .bottom)
         .toolbarBackground(Color.purple, for: .navigationBar)
         .environmentObject(historyViewModel)
-        .task {
-            await historyViewModel.getHistory()
+        .onAppear {
+            Task {
+                await historyViewModel.getHistory(childId: childId)
+            }
         }
         .refreshable {
-            await historyViewModel.getHistory()
+            await historyViewModel.getHistory(childId: childId)
         }
     }
 }
