@@ -51,7 +51,7 @@ struct WalletView: View {
             }
             
         }
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(.inline) // TODO: automatico mostra o sheet em prwview o inline nao
         .environmentObject(wallet)
         .onAppear {
             Task{
@@ -91,7 +91,7 @@ struct Teste: View {
 // TODO: Botao nativo navigationBar esta azul validar se vai criar um novo buttom ou vai usar ele.
 struct Wallet_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack{
+        NavigationView{
             WalletView()
         }
     }
