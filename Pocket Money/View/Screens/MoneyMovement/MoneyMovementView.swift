@@ -38,10 +38,20 @@ class TextBindingManager: ObservableObject {
     }
 }
 
-protocol FullyNamed {
-    var Saque: String { get }
-    var Depósito: String { get }
+enum TypeMovement: String {
+    case spent = "Gasto"
+    case saveMoney = "Guardado"
+    case deposit = "Depósito"
+    case withdraw = "Sacar"
 }
+
+enum TitlePages: String {
+    case titleRecordExpenses = "Registrar Gastos"
+    case titleSaveMoney = "Guardar Dinheiro"
+    case titleDeposit = "Depositar"
+    case titleWithdraw = "Sacar"
+}
+
 
 // MARK: VIEWMODEL
 struct MoneyMovementViewModel {
@@ -73,27 +83,28 @@ struct MoneyMovementViewModel {
         }
     }
 }
+
 struct MoneyMovementPerUser: View {
     @ObservedObject var description = TextBindingManager(limit: 137)
     @EnvironmentObject  var singInViewModel: SingInViewModel
     @State var moneyMovementViewModel = MoneyMovementViewModel()
     var id: String
-    var typeMovement: String
-    var title: String
+    var typeMovement: TypeMovement
+    var title: TitlePages
     @State private var type = String()
     @State private var isSubtitleHidden = false
     @State private var value = 0
     
     private var numberFormatter: NumberFormatter
     
-    init(numberFormatter: NumberFormatter = NumberFormatter(), id: String?, typeMovement: String?, title: String) {
+    init(numberFormatter: NumberFormatter = NumberFormatter(), id: String?, typeMovement: TypeMovement?, title: TitlePages) {
         self.numberFormatter = numberFormatter
         self.numberFormatter.locale = Locale(identifier: "pt_BR")
         self.numberFormatter.numberStyle = .currency
         self.numberFormatter.maximumFractionDigits = 2
         
         self.id = id ?? String()
-        self.typeMovement = typeMovement ?? String()
+        self.typeMovement = typeMovement ?? .spent
         self.title = title
     }
 
@@ -140,7 +151,7 @@ struct MoneyMovementPerUser: View {
                     .frame(width: geometry.size.width)
                     .frame(minHeight: geometry.size.height)
                 }
-                .navigationTitle(title)
+                .navigationTitle(title.rawValue)
                 .navigationBarTitleDisplayMode(.inline)
             }
         }
@@ -150,7 +161,7 @@ struct MoneyMovementPerUser: View {
 struct MoneyMovement_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack{
-            MoneyMovementPerUser(id: "", typeMovement: "", title: "Registrar Gastos")
+            MoneyMovementPerUser(id: "", typeMovement: .spent, title: .titleRecordExpenses)
         }
     
     }

@@ -59,23 +59,22 @@ struct WalletView: View {
             }
         }
         .sheet(isPresented: $wallet.isPresentRecordExpenses) {
-            MoneyMovementPerUser(id: childId, typeMovement: "Gasto", title: "Registrar Gastos")
+            MoneyMovementPerUser(id: childId, typeMovement: .spent, title: .titleRecordExpenses)
         }
         .sheet(isPresented: $wallet.isPresentSaveMoney) {
-            MoneyMovementPerUser(id: childId, typeMovement: "Guardado", title: "Guardar Dinheiro")
+            MoneyMovementPerUser(id: childId, typeMovement: .saveMoney, title: .titleSaveMoney)
         }
         
         .sheet(isPresented: $wallet.isPresentDeposit) {
-            MoneyMovementPerUser(id: childId, typeMovement: "Depósito", title: "Depositar")
+            MoneyMovementPerUser(id: childId, typeMovement: .deposit, title: .titleDeposit)
         }
         
         .sheet(isPresented: $wallet.isPresentWithdraw) {
-            MoneyMovementPerUser(id: childId, typeMovement: "Sacar", title: "Sacar")
+            MoneyMovementPerUser(id: childId, typeMovement: .withdraw, title: .titleWithdraw)
         }
     }
     
 }
-
 
 struct Teste: View {
     var body: some View {
