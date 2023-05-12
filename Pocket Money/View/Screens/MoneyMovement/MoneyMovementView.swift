@@ -6,8 +6,8 @@
 //
 
 import SwiftUI
-
-struct Movimentation {
+// MARK: - MODEL
+struct Movimentation: Codable {
     let id: String
     let description: String
     let value: Double
@@ -15,6 +15,12 @@ struct Movimentation {
     let kidId: String
     let createdAt: String
     let updatedAt: String
+}
+
+struct MovimentationRequest: Codable {
+    var description = String()
+    var value = String()
+    var type = String()
 }
 
 class TextBindingManager: ObservableObject {
@@ -32,18 +38,63 @@ class TextBindingManager: ObservableObject {
     }
 }
 
-struct RecordExpenses: View {
+protocol FullyNamed {
+    var Saque: String { get }
+    var Depósito: String { get }
+}
+
+// MARK: VIEWMODEL
+struct MoneyMovementViewModel {
+    var movimentationRequest = MovimentationRequest()
+    @State var hasUrl = "https://jab-api-xh0g.onrender.com/api/v1//movimentations"
+    @EnvironmentObject  var singInViewModel: SingInViewModel
+    
+    func movimentation(id: String?) async {
+        guard let encoded = try? JSONEncoder().encode(movimentationRequest) else {
+            print("Failed to encode order")
+            return
+        }
+        if let hasId = id {
+            hasUrl = "\(hasUrl)/\(hasId)"
+        }
+        guard let url = URL(string: hasUrl) else {return}
+        var request = URLRequest(url: url)
+        let authorizationKey = "Bearer ".appending(singInViewModel.token)
+        request.setValue(authorizationKey, forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "POST"
+        
+        do {
+            let (data, _) = try await URLSession.shared.upload(for: request, from: encoded)
+            let userCreated = try JSONDecoder().decode(Movimentation.self, from: data)
+        } catch  {
+            print(String(describing: error))
+            print(error.localizedDescription)
+        }
+    }
+}
+struct MoneyMovementPerUser: View {
     @ObservedObject var description = TextBindingManager(limit: 137)
+    @EnvironmentObject  var singInViewModel: SingInViewModel
+    @State var moneyMovementViewModel = MoneyMovementViewModel()
+    var id: String
+    var typeMovement: String
+    var title: String
+    @State private var type = String()
     @State private var isSubtitleHidden = false
     @State private var value = 0
     
     private var numberFormatter: NumberFormatter
     
-    init(numberFormatter: NumberFormatter = NumberFormatter()) {
+    init(numberFormatter: NumberFormatter = NumberFormatter(), id: String?, typeMovement: String?, title: String) {
         self.numberFormatter = numberFormatter
         self.numberFormatter.locale = Locale(identifier: "pt_BR")
         self.numberFormatter.numberStyle = .currency
         self.numberFormatter.maximumFractionDigits = 2
+        
+        self.id = id ?? String()
+        self.typeMovement = typeMovement ?? String()
+        self.title = title
     }
 
     
@@ -72,7 +123,7 @@ struct RecordExpenses: View {
                         
                         Button {
                             Task{
-                                //await viewModel.createChild()
+                                await moneyMovementViewModel.movimentation(id: id)
                             }
                         } label: {
                             Text("Registrar")
@@ -89,17 +140,17 @@ struct RecordExpenses: View {
                     .frame(width: geometry.size.width)
                     .frame(minHeight: geometry.size.height)
                 }
-                .navigationTitle("Registrar Gasto")
+                .navigationTitle(title)
                 .navigationBarTitleDisplayMode(.inline)
             }
         }
     }
 }
 
-struct RecordExpenses_Previews: PreviewProvider {
+struct MoneyMovement_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack{
-            RecordExpenses()
+            MoneyMovementPerUser(id: "", typeMovement: "", title: "Registrar Gastos")
         }
     
     }

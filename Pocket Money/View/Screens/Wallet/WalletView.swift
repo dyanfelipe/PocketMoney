@@ -51,7 +51,7 @@ struct WalletView: View {
             }
             
         }
-        .navigationBarTitleDisplayMode(.inline) // TODO: automatico mostra o sheet em prwview o inline nao
+        .navigationBarTitleDisplayMode(.automatic) // TODO: automatico mostra o sheet em prwview o inline nao
         .environmentObject(wallet)
         .onAppear {
             Task{
@@ -59,18 +59,18 @@ struct WalletView: View {
             }
         }
         .sheet(isPresented: $wallet.isPresentRecordExpenses) {
-            RecordExpenses()
+            MoneyMovementPerUser(id: childId, typeMovement: "Gasto", title: "Registrar Gastos")
         }
         .sheet(isPresented: $wallet.isPresentSaveMoney) {
-            SaveMoneyView()
+            MoneyMovementPerUser(id: childId, typeMovement: "Guardado", title: "Guardar Dinheiro")
         }
         
         .sheet(isPresented: $wallet.isPresentDeposit) {
-            DepositView()
+            MoneyMovementPerUser(id: childId, typeMovement: "Depósito", title: "Depositar")
         }
         
         .sheet(isPresented: $wallet.isPresentWithdraw) {
-            WithdrawView()
+            MoneyMovementPerUser(id: childId, typeMovement: "Sacar", title: "Sacar")
         }
     }
     
