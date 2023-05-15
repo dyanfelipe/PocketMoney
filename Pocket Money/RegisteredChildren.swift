@@ -215,6 +215,7 @@ struct AddNewChild: View {
                             Image(systemName: "person.fill")
                                 .foregroundColor(.purple)
                             TextField("Nome do filho", text: $viewModel.child.name)
+                                .autocorrectionDisabled()
                                 .fontWeight(.medium)
                         }
                         .textFieldBorderIcon()
@@ -223,6 +224,8 @@ struct AddNewChild: View {
                             Image(systemName: "envelope.fill")
                                 .foregroundColor(.purple)
                             TextField("Email", text: $viewModel.child.email)
+                                .autocapitalization(.none)
+                                .keyboardType(.emailAddress)
                                 .fontWeight(.medium)
                         }
                         .textFieldBorderIcon()

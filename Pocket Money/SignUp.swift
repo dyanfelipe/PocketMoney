@@ -115,6 +115,7 @@ struct SignUp: View {
                         Image(systemName: "person.fill")
                             .foregroundColor(.purple)
                         TextField("Nome", text: $viewModel.createdAccount.name)
+                            .autocorrectionDisabled()
                             .autocapitalization(.words)
                             .fontWeight(.medium)
                     }
@@ -124,6 +125,7 @@ struct SignUp: View {
                         Image(systemName: "envelope.fill")
                             .foregroundColor(.purple)
                         TextField("E-mail", text: $viewModel.createdAccount.email)
+                            .keyboardType(.emailAddress)
                             .autocapitalization(.none)
                             .fontWeight(.medium)
                     }

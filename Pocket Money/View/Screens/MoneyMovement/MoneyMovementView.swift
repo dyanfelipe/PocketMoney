@@ -10,7 +10,7 @@ import SwiftUI
 struct Movimentation: Codable {
     let id: String
     let description: String
-    let value: Double
+    let value: Int
     let type: String
     let kidId: String
     let createdAt: String
@@ -22,6 +22,7 @@ struct MovimentationRequest: Codable {
     var value = String()
     var type = String()
 }
+
 
 class TextBindingManager: ObservableObject {
     @Published var text = "" {
@@ -54,40 +55,47 @@ enum TitlePages: String {
 
 
 // MARK: VIEWMODEL
-struct MoneyMovementViewModel {
+class MoneyMovementViewModel: ObservableObject {
     var movimentationRequest = MovimentationRequest()
-    @State var hasUrl = "https://jab-api-xh0g.onrender.com/api/v1//movimentations"
-    @EnvironmentObject  var singInViewModel: SingInViewModel
+    var baseURL = "https://jab-api-xh0g.onrender.com/api/v1/movimentations"
+    let parent = UserDefaults.standard.bool(forKey: "parent")
+    let token = UserDefaults.standard.string(forKey: "token") ?? ""
     
     func movimentation(id: String?) async {
+        var requestURL = self.baseURL
         guard let encoded = try? JSONEncoder().encode(movimentationRequest) else {
             print("Failed to encode order")
             return
         }
+        print(String(data: encoded, encoding: .utf8))
+        
         if let hasId = id {
-            hasUrl = "\(hasUrl)/\(hasId)"
+            requestURL = "\(requestURL)/\(hasId)"
         }
-        guard let url = URL(string: hasUrl) else {return}
+        print(String(describing: requestURL))
+        guard let url = URL(string: requestURL) else {return}
         var request = URLRequest(url: url)
-        let authorizationKey = "Bearer ".appending(singInViewModel.token)
+        let authorizationKey = "Bearer ".appending(token)
         request.setValue(authorizationKey, forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
         
         do {
             let (data, _) = try await URLSession.shared.upload(for: request, from: encoded)
-            let userCreated = try JSONDecoder().decode(Movimentation.self, from: data)
+            print(String(data: data, encoding: .utf8))
+//            let movimentation = try JSONDecoder().decode(Movimentation.self, from: data)
+//            print(movimentation)
         } catch  {
             print(String(describing: error))
-            print(error.localizedDescription)
+//            print(error.localizedDescription)
         }
     }
 }
 
 struct MoneyMovementPerUser: View {
     @ObservedObject var description = TextBindingManager(limit: 137)
-    @EnvironmentObject  var singInViewModel: SingInViewModel
-    @State var moneyMovementViewModel = MoneyMovementViewModel()
+    @EnvironmentObject var singInViewModel: SingInViewModel
+    @StateObject var moneyMovementViewModel = MoneyMovementViewModel()
     var id: String
     var typeMovement: TypeMovement
     var title: TitlePages
@@ -126,7 +134,7 @@ struct MoneyMovementPerUser: View {
                         HStack{
                             Image(systemName: "note.text")
                                 .foregroundColor(.purple)
-                            TextField("Descrição", text: $description.text, axis: .vertical)
+                            TextField("Descrição", text: $moneyMovementViewModel.movimentationRequest.description, axis: .vertical)
                                 .lineLimit(4)
                                 .fontWeight(.medium)
                         }
@@ -134,6 +142,8 @@ struct MoneyMovementPerUser: View {
                         
                         Button {
                             Task{
+                                moneyMovementViewModel.movimentationRequest.type = typeMovement.rawValue
+                                moneyMovementViewModel.movimentationRequest.value = String(Double(value) / 100)
                                 await moneyMovementViewModel.movimentation(id: id)
                             }
                         } label: {

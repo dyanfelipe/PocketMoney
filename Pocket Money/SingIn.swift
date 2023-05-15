@@ -122,7 +122,7 @@ struct SingIn: View {
                     .foregroundColor(.purple)
                 TextField("E-mail", text: $viewModel.singInAccount.email)
                     .autocapitalization(.none)
-                        .keyboardType(.emailAddress)
+                    .keyboardType(.emailAddress)
                     .fontWeight(.medium)
             }
             .textFieldBorderIcon()

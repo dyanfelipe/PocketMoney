@@ -8,7 +8,7 @@
 import Foundation
 
 class WalletViewModel: ObservableObject {
-    @Published var parent: Bool = true//UserDefaults.standard.bool(forKey: "parent")
+    @Published var parent: Bool = UserDefaults.standard.bool(forKey: "parent")
     @Published var walletData = WalletModel()
     @Published var isPresentRecordExpenses = false
     @Published var isPresentSaveMoney = false
