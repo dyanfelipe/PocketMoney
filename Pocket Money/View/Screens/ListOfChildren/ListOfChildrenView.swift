@@ -7,108 +7,11 @@
 
 import SwiftUI
 
-// MARK: - MODEL
-struct NewChild: Codable {
-    var name: String = ""
-    var email: String = ""
-    var password: String = ""
-    var passwordConfirmation: String = ""
-}
-
-struct RaisedChild: Codable {
-    var id: String
-    var name: String
-    var email: String
-}
-
-struct Childs: Codable, Hashable {
-    let id: String
-    let name: String
-    let savedValue: Double
-    let amountToSpend: Double
-}
-
 // MARK: - VIEWMODEL
-class RegisteredChildrenViewModel: ObservableObject {
-    var child = NewChild()
-    @Published var showSheet: Bool = false
-    @Published var childs: [Childs] = []
-    @StateObject var singInViewModel = SingInViewModel()
-    
-     func showSheetToggle() {
-        self.showSheet.toggle()
-    }
-    
-    func getChilds() async {
-        let fullUrl = "https://jab-api-xh0g.onrender.com/api/v1/parents/children"
-        guard let url = URL(string: fullUrl) else {return}
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
-        request.addValue("Bearer \(singInViewModel.token)", forHTTPHeaderField: "Authorization")
 
-        do {
-            let (data, _) = try await URLSession.shared.data(for: request)
-            print(String(describing: data))
-            let decodedResponse = try JSONDecoder().decode([Childs].self, from: data)
-            childs = decodedResponse
-        }catch {
-            print(error.localizedDescription)
-            error.localizedDescription
-        }
-    }
-    
-    func createChild() async {
-        guard let encoded = try? JSONEncoder().encode(child) else {
-            print("Failed to encode order")
-            return
-        }
-        guard let url = URL(string: "https://jab-api-xh0g.onrender.com/api/v1/kids") else {return}
-        var request = URLRequest(url: url)
-        let authorizationKey = "Bearer ".appending(singInViewModel.token)
-        request.setValue(authorizationKey, forHTTPHeaderField: "Authorization")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpMethod = "POST"
-        
-        do {
-            let (data, _) = try await URLSession.shared.upload(for: request, from: encoded)
-            let userCreated = try JSONDecoder().decode(RaisedChild.self, from: data)
-            await getChilds()
-            showSheetToggle()
-        } catch  {
-            print(String(describing: error))
-            print(error.localizedDescription)
-        }
-    }
-    
-    func convetRealToCentsDecimal(savedValueD: String, amountToSpendD: String) -> String {
-        let savedValueD = Double(savedValueD) ?? 0.0
-        let amountToSpendD = Double(amountToSpendD) ?? 0.0
-        let sumDouble = ((savedValueD + amountToSpendD) / 100) * 100
-        let newValue = formatNumberToReal(value: sumDouble)
-        return newValue
-    }
-    
-    func convetRealToCentsDecimal(value: String) -> String {
-        let value = Double(value) ?? 0.0
-        let valueNewFormatted = (value / 100) * 100
-        let newValue = formatNumberToReal(value: valueNewFormatted)
-        return newValue
-    }
-    
-    func formatNumberToReal(value: Double) -> String {
-        let numberFormatter = NumberFormatter()
-        numberFormatter.locale = Locale(identifier: "pt_BR")
-        numberFormatter.minimumFractionDigits = 2
-        numberFormatter.numberStyle = .decimal
-        return numberFormatter.string(from: NSNumber(value: value)) ?? "0.0"
-    }
-}
-
-struct RegisteredChildren: View {
-    @EnvironmentObject var viewModel: RegisteredChildrenViewModel
-    @EnvironmentObject var singInViewModel: SingInViewModel
+struct ListOfChildrenView: View {
+    @EnvironmentObject var viewModel: ListOfChildrenViewModel
+    @EnvironmentObject var singInViewModel: SignInViewModel
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
     var backButton : some View { Button(action: {
@@ -160,6 +63,7 @@ struct RegisteredChildren: View {
                             }
                             .backgroundStyle(Color(.white))
                             .listRowInsets(EdgeInsets())
+                           
                         }
                    
                     }
@@ -205,7 +109,7 @@ struct RegisteredChildren: View {
 }
 
 struct AddNewChild: View {
-    @EnvironmentObject var viewModel: RegisteredChildrenViewModel
+    @EnvironmentObject var viewModel: ListOfChildrenViewModel
     var body: some View {
         NavigationView {
             GeometryReader { geometry in
@@ -285,14 +189,14 @@ struct AddNewChild: View {
 
 
 struct RegisteredChildren_Previews: PreviewProvider {
-    static let transactionListVM: RegisteredChildrenViewModel = {
-        let transactionListVM = RegisteredChildrenViewModel()
+    static let transactionListVM: ListOfChildrenViewModel = {
+        let transactionListVM = ListOfChildrenViewModel()
         transactionListVM.childs = transactionListPreviewData
         return transactionListVM
     }()
     static var previews: some View {
         NavigationStack{
-            RegisteredChildren()
+            ListOfChildrenView()
                 .environmentObject(transactionListVM)
         }
     }

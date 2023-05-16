@@ -18,15 +18,27 @@
 		5BE501752A0D31B1004C8AE3 /* HistoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BE501742A0D31B1004C8AE3 /* HistoryService.swift */; };
 		5BE501772A0D3207004C8AE3 /* WalletHistoryItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BE501762A0D3207004C8AE3 /* WalletHistoryItemView.swift */; };
 		5BE5017A2A0DAA34004C8AE3 /* MoneyMovementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BE501792A0DAA34004C8AE3 /* MoneyMovementView.swift */; };
-		861644702A0443510025CC3F /* SignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8616446F2A0443510025CC3F /* SignUp.swift */; };
-		861644722A0459190025CC3F /* RegisteredChildren.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861644712A0459190025CC3F /* RegisteredChildren.swift */; };
+		861644702A0443510025CC3F /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8616446F2A0443510025CC3F /* SignUpView.swift */; };
+		861644722A0459190025CC3F /* ListOfChildrenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861644712A0459190025CC3F /* ListOfChildrenView.swift */; };
 		861644742A048F440025CC3F /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861644732A048F440025CC3F /* Extension.swift */; };
+		865392092A1309310044191D /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865392082A1309310044191D /* SignUpViewModel.swift */; };
+		8653920B2A1309660044191D /* ListOfChildrenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8653920A2A1309660044191D /* ListOfChildrenViewModel.swift */; };
+		8653920E2A1309E70044191D /* CurrencyUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8653920D2A1309E70044191D /* CurrencyUITextField.swift */; };
+		865392102A130A460044191D /* MoneyMovementViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8653920F2A130A460044191D /* MoneyMovementViewModel.swift */; };
+		865392122A130A8B0044191D /* MoneyMovementModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865392112A130A8B0044191D /* MoneyMovementModel.swift */; };
 		868D125E2A095F0F00B31520 /* PreviewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868D125D2A095F0F00B31520 /* PreviewData.swift */; };
-		86A0E1092A04240C009A1107 /* SingIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A0E1082A04240C009A1107 /* SingIn.swift */; };
+		86A0E1092A04240C009A1107 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A0E1082A04240C009A1107 /* SignInView.swift */; };
 		86A531E12A030F86003055A1 /* Pocket_MoneyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A531E02A030F86003055A1 /* Pocket_MoneyApp.swift */; };
 		86A531E32A030F86003055A1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A531E22A030F86003055A1 /* ContentView.swift */; };
 		86A531E52A030F86003055A1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 86A531E42A030F86003055A1 /* Assets.xcassets */; };
 		86A531E82A030F86003055A1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 86A531E72A030F86003055A1 /* Preview Assets.xcassets */; };
+		86DA06FA2A1301CB00E41B75 /* TextFieldBorderIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DA06F92A1301CB00E41B75 /* TextFieldBorderIcon.swift */; };
+		86DA06FC2A13025300E41B75 /* SignInModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DA06FB2A13025300E41B75 /* SignInModel.swift */; };
+		86DA06FE2A13028200E41B75 /* SignUpModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DA06FD2A13028200E41B75 /* SignUpModel.swift */; };
+		86DA07002A1302D800E41B75 /* ListOfChildrenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DA06FF2A1302D800E41B75 /* ListOfChildrenModel.swift */; };
+		86DA07072A13068500E41B75 /* ContentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DA07062A13068500E41B75 /* ContentModel.swift */; };
+		86DA07092A1306DD00E41B75 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DA07082A1306DD00E41B75 /* ContentViewModel.swift */; };
+		86DA070B2A1306FD00E41B75 /* SignInViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DA070A2A1306FD00E41B75 /* SignInViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,16 +53,28 @@
 		5BE501742A0D31B1004C8AE3 /* HistoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryService.swift; sourceTree = "<group>"; };
 		5BE501762A0D3207004C8AE3 /* WalletHistoryItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletHistoryItemView.swift; sourceTree = "<group>"; };
 		5BE501792A0DAA34004C8AE3 /* MoneyMovementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoneyMovementView.swift; sourceTree = "<group>"; };
-		8616446F2A0443510025CC3F /* SignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUp.swift; sourceTree = "<group>"; };
-		861644712A0459190025CC3F /* RegisteredChildren.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisteredChildren.swift; sourceTree = "<group>"; };
+		8616446F2A0443510025CC3F /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		861644712A0459190025CC3F /* ListOfChildrenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListOfChildrenView.swift; sourceTree = "<group>"; };
 		861644732A048F440025CC3F /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
+		865392082A1309310044191D /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
+		8653920A2A1309660044191D /* ListOfChildrenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListOfChildrenViewModel.swift; sourceTree = "<group>"; };
+		8653920D2A1309E70044191D /* CurrencyUITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyUITextField.swift; sourceTree = "<group>"; };
+		8653920F2A130A460044191D /* MoneyMovementViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoneyMovementViewModel.swift; sourceTree = "<group>"; };
+		865392112A130A8B0044191D /* MoneyMovementModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoneyMovementModel.swift; sourceTree = "<group>"; };
 		868D125D2A095F0F00B31520 /* PreviewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewData.swift; sourceTree = "<group>"; };
-		86A0E1082A04240C009A1107 /* SingIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingIn.swift; sourceTree = "<group>"; };
+		86A0E1082A04240C009A1107 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		86A531DD2A030F86003055A1 /* Pocket Money.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pocket Money.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		86A531E02A030F86003055A1 /* Pocket_MoneyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pocket_MoneyApp.swift; sourceTree = "<group>"; };
 		86A531E22A030F86003055A1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		86A531E42A030F86003055A1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		86A531E72A030F86003055A1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		86DA06F92A1301CB00E41B75 /* TextFieldBorderIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldBorderIcon.swift; sourceTree = "<group>"; };
+		86DA06FB2A13025300E41B75 /* SignInModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInModel.swift; sourceTree = "<group>"; };
+		86DA06FD2A13028200E41B75 /* SignUpModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpModel.swift; sourceTree = "<group>"; };
+		86DA06FF2A1302D800E41B75 /* ListOfChildrenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListOfChildrenModel.swift; sourceTree = "<group>"; };
+		86DA07062A13068500E41B75 /* ContentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentModel.swift; sourceTree = "<group>"; };
+		86DA07082A1306DD00E41B75 /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
+		86DA070A2A1306FD00E41B75 /* SignInViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,7 +100,9 @@
 		5BE501622A0D2E8C004C8AE3 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				8653920C2A1309900044191D /* UIkit */,
 				5BE501762A0D3207004C8AE3 /* WalletHistoryItemView.swift */,
+				86DA06F92A1301CB00E41B75 /* TextFieldBorderIcon.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -84,6 +110,10 @@
 		5BE501632A0D2EA2004C8AE3 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				86DA07052A13062600E41B75 /* ContentView */,
+				86DA07042A1305EB00E41B75 /* SignIn */,
+				86DA07032A1305A300E41B75 /* SignUp */,
+				86DA07022A13057B00E41B75 /* ListOfChildren */,
 				5BE501782A0DA9FD004C8AE3 /* MoneyMovement */,
 				5BE501682A0D2F97004C8AE3 /* Wallet */,
 				5BE5016F2A0D3103004C8AE3 /* History */,
@@ -96,6 +126,11 @@
 			children = (
 				5BE501692A0D2FD6004C8AE3 /* Wallet.swift */,
 				5BE501702A0D313C004C8AE3 /* History.swift */,
+				86DA06FB2A13025300E41B75 /* SignInModel.swift */,
+				86DA06FD2A13028200E41B75 /* SignUpModel.swift */,
+				86DA06FF2A1302D800E41B75 /* ListOfChildrenModel.swift */,
+				86DA07062A13068500E41B75 /* ContentModel.swift */,
+				865392112A130A8B0044191D /* MoneyMovementModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -120,6 +155,7 @@
 		5BE501672A0D2F26004C8AE3 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				861644732A048F440025CC3F /* Extension.swift */,
 				5BDA1A762A0C275100F57405 /* Utils.swift */,
 			);
 			path = Utilities;
@@ -147,8 +183,17 @@
 			isa = PBXGroup;
 			children = (
 				5BE501792A0DAA34004C8AE3 /* MoneyMovementView.swift */,
+				8653920F2A130A460044191D /* MoneyMovementViewModel.swift */,
 			);
 			path = MoneyMovement;
+			sourceTree = "<group>";
+		};
+		8653920C2A1309900044191D /* UIkit */ = {
+			isa = PBXGroup;
+			children = (
+				8653920D2A1309E70044191D /* CurrencyUITextField.swift */,
+			);
+			path = UIkit;
 			sourceTree = "<group>";
 		};
 		86A531D42A030F86003055A1 = {
@@ -175,12 +220,7 @@
 				5BE501662A0D2F1B004C8AE3 /* Services */,
 				5BE501672A0D2F26004C8AE3 /* Utilities */,
 				5BE501652A0D2ED8004C8AE3 /* Resources */,
-				86A531E22A030F86003055A1 /* ContentView.swift */,
 				86A531E02A030F86003055A1 /* Pocket_MoneyApp.swift */,
-				861644712A0459190025CC3F /* RegisteredChildren.swift */,
-				861644732A048F440025CC3F /* Extension.swift */,
-				8616446F2A0443510025CC3F /* SignUp.swift */,
-				86A0E1082A04240C009A1107 /* SingIn.swift */,
 				86A531E62A030F86003055A1 /* Preview Content */,
 			);
 			path = "Pocket Money";
@@ -193,6 +233,42 @@
 				868D125D2A095F0F00B31520 /* PreviewData.swift */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		86DA07022A13057B00E41B75 /* ListOfChildren */ = {
+			isa = PBXGroup;
+			children = (
+				861644712A0459190025CC3F /* ListOfChildrenView.swift */,
+				8653920A2A1309660044191D /* ListOfChildrenViewModel.swift */,
+			);
+			path = ListOfChildren;
+			sourceTree = "<group>";
+		};
+		86DA07032A1305A300E41B75 /* SignUp */ = {
+			isa = PBXGroup;
+			children = (
+				8616446F2A0443510025CC3F /* SignUpView.swift */,
+				865392082A1309310044191D /* SignUpViewModel.swift */,
+			);
+			path = SignUp;
+			sourceTree = "<group>";
+		};
+		86DA07042A1305EB00E41B75 /* SignIn */ = {
+			isa = PBXGroup;
+			children = (
+				86A0E1082A04240C009A1107 /* SignInView.swift */,
+				86DA070A2A1306FD00E41B75 /* SignInViewModel.swift */,
+			);
+			path = SignIn;
+			sourceTree = "<group>";
+		};
+		86DA07052A13062600E41B75 /* ContentView */ = {
+			isa = PBXGroup;
+			children = (
+				86A531E22A030F86003055A1 /* ContentView.swift */,
+				86DA07082A1306DD00E41B75 /* ContentViewModel.swift */,
+			);
+			path = ContentView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -265,23 +341,35 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				865392102A130A460044191D /* MoneyMovementViewModel.swift in Sources */,
 				5BBFE9142A073BA5008AAFC3 /* WalletView.swift in Sources */,
-				861644722A0459190025CC3F /* RegisteredChildren.swift in Sources */,
+				861644722A0459190025CC3F /* ListOfChildrenView.swift in Sources */,
 				5BE5017A2A0DAA34004C8AE3 /* MoneyMovementView.swift in Sources */,
+				8653920B2A1309660044191D /* ListOfChildrenViewModel.swift in Sources */,
 				5BE501752A0D31B1004C8AE3 /* HistoryService.swift in Sources */,
 				5BE501712A0D313C004C8AE3 /* History.swift in Sources */,
-				86A0E1092A04240C009A1107 /* SingIn.swift in Sources */,
+				865392122A130A8B0044191D /* MoneyMovementModel.swift in Sources */,
+				86DA07002A1302D800E41B75 /* ListOfChildrenModel.swift in Sources */,
+				86A0E1092A04240C009A1107 /* SignInView.swift in Sources */,
 				5BE501772A0D3207004C8AE3 /* WalletHistoryItemView.swift in Sources */,
+				86DA07092A1306DD00E41B75 /* ContentViewModel.swift in Sources */,
 				5BE5016A2A0D2FD6004C8AE3 /* Wallet.swift in Sources */,
-				861644702A0443510025CC3F /* SignUp.swift in Sources */,
+				861644702A0443510025CC3F /* SignUpView.swift in Sources */,
+				86DA06FC2A13025300E41B75 /* SignInModel.swift in Sources */,
 				861644742A048F440025CC3F /* Extension.swift in Sources */,
+				86DA07072A13068500E41B75 /* ContentModel.swift in Sources */,
+				865392092A1309310044191D /* SignUpViewModel.swift in Sources */,
+				86DA070B2A1306FD00E41B75 /* SignInViewModel.swift in Sources */,
+				86DA06FA2A1301CB00E41B75 /* TextFieldBorderIcon.swift in Sources */,
 				5BDA1A772A0C275100F57405 /* Utils.swift in Sources */,
 				868D125E2A095F0F00B31520 /* PreviewData.swift in Sources */,
 				5BE5016E2A0D30A8004C8AE3 /* WalletService.swift in Sources */,
+				86DA06FE2A13028200E41B75 /* SignUpModel.swift in Sources */,
 				5BE501732A0D318B004C8AE3 /* HistoryViewModel.swift in Sources */,
 				5BBE18852A07DD6100DEA644 /* HistoryView.swift in Sources */,
 				5BE5016C2A0D306C004C8AE3 /* WalletViewModel.swift in Sources */,
 				86A531E32A030F86003055A1 /* ContentView.swift in Sources */,
+				8653920E2A1309E70044191D /* CurrencyUITextField.swift in Sources */,
 				86A531E12A030F86003055A1 /* Pocket_MoneyApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct WalletView: View {
     @StateObject var wallet = WalletViewModel()
-    @EnvironmentObject var singInViewModel: SingInViewModel
+    @EnvironmentObject var singInViewModel: SignInViewModel
     var childId: String?
     
     var body: some View {

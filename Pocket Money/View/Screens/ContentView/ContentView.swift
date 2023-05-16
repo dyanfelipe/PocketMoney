@@ -7,33 +7,15 @@
 
 import SwiftUI
 
-// MARK: - Model
-struct Carousel: Identifiable {
-    let name: String
-    let text: String
-    let styleValue: Int
-    var id: String { name }
-}
-
-// MARK: - VIEWMODEL
-struct ContentViewModel {
-    var index = 0
-    var transitionAnimation: CGFloat = 200.0
-    let carousel = [
-        Carousel(name: "money.bag", text: "O conhecimento começa pequeno", styleValue: 0),
-        Carousel(name: "money.safe", text: "Vamos enteder \n  o que é valor", styleValue: 1)
-    ]
-}
-
 struct ContentView: View {
     @State var viewModel = ContentViewModel()
-    @EnvironmentObject var singInViewModel: SingInViewModel
+    @EnvironmentObject var singInViewModel: SignInViewModel
     
     var body: some View {
         NavigationStack{
             if singInViewModel.userIsAuthenticated {
                 if(singInViewModel.parent){
-                    RegisteredChildren()
+                    ListOfChildrenView()
                 } else {
                     WalletView()
                 }
@@ -52,12 +34,12 @@ struct ContentView: View {
 }
 
 struct ContentView_Previews: PreviewProvider {
-    static let transactionListVM: SingInViewModel = {
-        let transactionListVM = SingInViewModel()
+    static let transactionListVM: SignInViewModel = {
+        let transactionListVM = SignInViewModel()
         return transactionListVM
     }()
-    static let registeredChildrenViewModel: RegisteredChildrenViewModel = {
-        let transactionListVM = RegisteredChildrenViewModel()
+    static let registeredChildrenViewModel: ListOfChildrenViewModel = {
+        let transactionListVM = ListOfChildrenViewModel()
         return transactionListVM
     }()
     static var previews: some View {
@@ -99,7 +81,7 @@ struct ButtonsSingInSinUp: View {
     var body: some View {
         VStack{
             NavigationLink(destination: {
-                SingIn()
+                SignInView()
             }, label: {
                 Text("Já tenho cadastro")
                     .fontWeight(.semibold)
@@ -111,7 +93,7 @@ struct ButtonsSingInSinUp: View {
             .tint(.purple)
             .padding(.bottom)
             
-            NavigationLink("Não tenho conta", destination: SignUp())
+            NavigationLink("Não tenho conta", destination: SignUpView())
                 .foregroundColor(.purple)
                 .fontWeight(.semibold)
     

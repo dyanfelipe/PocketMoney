@@ -9,8 +9,8 @@ import SwiftUI
 
     @main
 struct Pocket_MoneyApp: App {
-    @StateObject var viewModel = SingInViewModel()
-    @StateObject var registeredChildrenViewModel = RegisteredChildrenViewModel()
+    @StateObject var viewModel = SignInViewModel()
+    @StateObject var registeredChildrenViewModel = ListOfChildrenViewModel()
     var body: some Scene {
         WindowGroup {
             ContentView()
