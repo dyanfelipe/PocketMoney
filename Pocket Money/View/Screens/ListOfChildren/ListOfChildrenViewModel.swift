@@ -12,7 +12,7 @@ class ListOfChildrenViewModel: ObservableObject {
     var child = NewChild()
     @Published var showSheet: Bool = false
     @Published var childs: [Childs] = []
-    @StateObject var singInViewModel = SignInViewModel()
+    let token = UserDefaults.standard.string(forKey: "token") ?? ""
     
      func showSheetToggle() {
         self.showSheet.toggle()
@@ -25,26 +25,25 @@ class ListOfChildrenViewModel: ObservableObject {
         request.httpMethod = "GET"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
-        request.addValue("Bearer \(singInViewModel.token)", forHTTPHeaderField: "Authorization")
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
 
         do {
             let (data, _) = try await URLSession.shared.data(for: request)
-            print(String(describing: data))
             let decodedResponse = try JSONDecoder().decode([Childs].self, from: data)
-            childs = decodedResponse
+            DispatchQueue.main.async {
+                self.childs = decodedResponse
+            }
+            
         }catch {
-            print(error.localizedDescription)
+            print("error")
         }
     }
     
     func createChild() async {
-        guard let encoded = try? JSONEncoder().encode(child) else {
-            print("Failed to encode order")
-            return
-        }
+        guard let encoded = try? JSONEncoder().encode(child) else { return }
         guard let url = URL(string: "https://jab-api-xh0g.onrender.com/api/v1/kids") else {return}
         var request = URLRequest(url: url)
-        let authorizationKey = "Bearer ".appending(singInViewModel.token)
+        let authorizationKey = "Bearer ".appending(token)
         request.setValue(authorizationKey, forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
@@ -56,7 +55,6 @@ class ListOfChildrenViewModel: ObservableObject {
             showSheetToggle()
         } catch  {
             print(String(describing: error))
-            print(error.localizedDescription)
         }
     }
     

@@ -38,3 +38,9 @@ struct Auth: Decodable {
         case parent
     }
 }
+
+enum UserType: String {
+    case dad
+    case child
+}
+

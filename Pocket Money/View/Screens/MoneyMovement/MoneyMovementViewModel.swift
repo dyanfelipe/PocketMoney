@@ -15,16 +15,11 @@ class MoneyMovementViewModel: ObservableObject {
     
     func movimentation(id: String?) async {
         var requestURL = self.baseURL
-        guard let encoded = try? JSONEncoder().encode(movimentationRequest) else {
-            print("Failed to encode order")
-            return
-        }
-        print(String(data: encoded, encoding: .utf8))
+        guard let encoded = try? JSONEncoder().encode(movimentationRequest) else { return }
         
         if let hasId = id {
             requestURL = "\(requestURL)/\(hasId)"
         }
-        print(String(describing: requestURL))
         guard let url = URL(string: requestURL) else {return}
         var request = URLRequest(url: url)
         let authorizationKey = "Bearer ".appending(token)
@@ -34,7 +29,7 @@ class MoneyMovementViewModel: ObservableObject {
         
         do {
             let (data, _) = try await URLSession.shared.upload(for: request, from: encoded)
-            print(String(data: data, encoding: .utf8))
+            print(String(data: data, encoding: .utf8) ?? "")
 //            let movimentation = try JSONDecoder().decode(Movimentation.self, from: data)
 //            print(movimentation)
         } catch  {

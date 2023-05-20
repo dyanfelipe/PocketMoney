@@ -27,12 +27,8 @@ struct WalletView: View {
                 if(!wallet.parent){
                     
                     Button {
-                        print("LOGOUUUUUUT")
                         singInViewModel.userIsAuthenticated = false
                         singInViewModel.token = ""
-                        NavigationLink("Teste") {
-                            ContentView()
-                        }
                     } label: {
                         ToolBarButton(imageName: "arrow.backward.square")
                     }

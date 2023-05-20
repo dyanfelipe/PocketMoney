@@ -14,9 +14,9 @@ struct ContentView: View {
     var body: some View {
         NavigationStack{
             if singInViewModel.userIsAuthenticated {
-                if(singInViewModel.parent){
+                if(singInViewModel.parent == .dad) {
                     ListOfChildrenView()
-                } else {
+                } else if(singInViewModel.parent == .child) {
                     WalletView()
                 }
             }else {
@@ -27,9 +27,7 @@ struct ContentView: View {
                 }
                 .padding()
             }
-       
         }
-       
     }
 }
 
@@ -96,7 +94,7 @@ struct ButtonsSingInSinUp: View {
             NavigationLink("Não tenho conta", destination: SignUpView())
                 .foregroundColor(.purple)
                 .fontWeight(.semibold)
-    
+            
         }
         
     }

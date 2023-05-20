@@ -15,10 +15,7 @@ class SignUpViewModel: ObservableObject {
     @State var viewModel = SignInViewModel()
     
     func createUser() async {
-        guard let encoded = try? JSONEncoder().encode(createdAccount) else {
-            print("Failed to encode order")
-            return
-        }
+        guard let encoded = try? JSONEncoder().encode(createdAccount) else { return }
         guard let url = URL(string: "https://jab-api-xh0g.onrender.com/api/v1/parents") else {return}
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -30,7 +27,6 @@ class SignUpViewModel: ObservableObject {
             confirmationMessage = AlertSingUp(message: "Usuário criado com sucesso", description: "Você já pode entrar com o novo usuário!")
             self.showingConfirmation = true
         } catch {
-            print(String(describing: error.localizedDescription))
             confirmationMessage = AlertSingUp(message: "Recurso existente", description: "Já existe um usuário cadastrado com esse e-mail")
             self.showingConfirmation = true
         }

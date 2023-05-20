@@ -11,6 +11,7 @@ struct SignInView: View {
     @EnvironmentObject var viewModel: SignInViewModel
     @EnvironmentObject var registeredChildren: ListOfChildrenViewModel
     @State private var selection: String? = nil
+    
     var body: some View {
         VStack{
             Image("happy.family")
@@ -29,8 +30,8 @@ struct SignInView: View {
             }
             .textFieldBorderIcon()
             // TODO: Change link NavigationLink
-            NavigationLink(destination: ListOfChildrenView(), tag: "RegisteredChildren", selection: $selection) { EmptyView() }.buttonStyle(PlainButtonStyle())
-            NavigationLink(destination: WalletView(), tag: "WhalletView", selection: $selection) { EmptyView() }.buttonStyle(PlainButtonStyle())
+            NavigationLink(destination: ListOfChildrenView(), tag: "RegisteredChildren", selection: $viewModel.selection) { EmptyView() }.buttonStyle(PlainButtonStyle())
+            NavigationLink(destination: WalletView(), tag: "WhalletView", selection: $viewModel.selection) { EmptyView() }.buttonStyle(PlainButtonStyle())
             
             HStack{
                 Image(systemName: "lock.fill")
@@ -42,11 +43,6 @@ struct SignInView: View {
             Button {
                 Task {
                     await viewModel.login()
-                    if(viewModel.parent){
-                        selection = "RegisteredChildren"
-                    }else {
-                        selection = "WhalletView"
-                    }
                 }
             } label: {
                 Text("Entrar")
@@ -65,7 +61,7 @@ struct SignInView: View {
         .navigationViewStyle(.stack)
         .accentColor(.gray7)
         .navigationBarTitleDisplayMode(.inline)
-        .alert("Email ou senha incorreto", isPresented: $viewModel.showingConfirmation){
+        .alert(viewModel.confirmationMessageTitle, isPresented: $viewModel.showingConfirmation){
             Button("OK"){}
         } message: {
             Text(viewModel.confirmationMessage)

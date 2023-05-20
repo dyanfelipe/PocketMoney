@@ -27,7 +27,7 @@ struct CreatedAccount: Codable {
    }
 }
 
-struct APIError: Error {
+struct APIError: Codable {
     var statusCode: Int
     var message: String
     var description: String
